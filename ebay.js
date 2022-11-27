@@ -4,6 +4,12 @@ const fs = require("fs");
 const tokenobject = require("./data.json"); 
 const path = require('path');
 const FormData = require('form-data');
+const { setIntervalAsync, clearIntervalAsync } = require('set-interval-async');
+
+
+var AWS = require('aws-sdk');
+AWS.config.update({region: 'us-east-1'});
+let ddb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
 
 const handleOrder = require('./handleOrder.js');
 
@@ -43,6 +49,7 @@ function updateTokenJSON(token) {
 
 const { default: OAuth2 } = require('ebay-api/lib/auth/oAuth2');
 const { x } = require('tar');
+const promiseRetry = require('promise-retry');
 const eBay = new eBayApi({
     appId: "TariqAzm-sandbox-PRD-d7db68d0a-ec165db0",
     devId: "79fd9488-d650-4518-a549-1829967ab2e5",
@@ -77,35 +84,45 @@ eBay.OAuth2.setCredentials(tokenobject);
   // console.log('Open URL', url);
   // const token = await eBay.OAuth2.getToken("v^1.1#i^1#p^3#f^0#I^3#r^1#t^Ul41Xzk6RUExNzJBQjJFNUQ5RDUxNzg3MUYxM0ZFRjRFNDhBRjRfMV8xI0VeMjYw");
   // console.log(token);
-  // console.log(JSON.stringify(token));
-  // eBay.OAuth2.setCredentials(token);
-  // eBay.OAuth2.mintApplicationAccessToken(); 
-  // let code = await eBay.OAuth2.getToken("v%5E1.1%23i%5E1%23r%5E1%23p%5E3%23f%5E0%23I%5E3%23t%5EUl41Xzc6OEIxNDVGMjJGMkIwQjVDM0Q3MDNBMDAzRTY2QUJFQUFfMF8xI0VeMjYw")
-  // console.log(code);
+
+console.log("h");
+setIntervalAsync(mainLoop, 60000);
+
+})(); 
 
 
-  array = []; 
+async function mainLoop(){
+  console.log("hi");
+console.log("Am I runinng");
   let ordersResult= await eBay.sell.fulfillment.getOrders({ 
     filter: "orderfulfillmentstatus:%7BNOT_STARTED%7CIN_PROGRESS%7D" });
 
-  ordersResult.orders.forEach(e => {
+  for (const e of ordersResult.orders){
     console.log(e);
     if(e.orderPaymentStatus === "PAID" && e.orderFulfillmentStatus === "NOT_STARTED" ){
       console.log("this guy payed and his order isn't shipped");
 
-      //If order ID doesn't exist, new order
-      if(!array.includes(e.orderId)){
-      array.push(e.orderId)
+
+        let params = {
+          TableName: 'orders',
+          Key: {
+            "orderid" : {S: e.legacyOrderId.toString()}
+          }};
+
+        let check = await ddb.getItem(params).promise().catch(e => {throw e});
+
+      //If order ID doesn't exist, add new order
+      console.log("chcck:" + check);
+      console.log("Is there a value in dymnabodb?" + check);
+      console.log(check.item);
+      if(!check.Item){
       handleOrder(e,eBay)
-      console.log(array);
       }
       // Invoke Function to Handle newOrder(); 
 
        // orderId  legacyOrderId
       // Push orderId to array 
     }
-  });
-
-
-})(); 
+  };
+}
 

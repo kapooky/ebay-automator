@@ -1,9 +1,11 @@
 const path = require('path');
 const FormData = require('form-data');
 const fs = require("fs");
+const recordTransaction = require("./dynamodb");
 
 var AWS = require('aws-sdk');
-var s3 = new AWS.s3(); 
+var s3 = new AWS.S3(); 
+
 
 
 var params = {
@@ -12,38 +14,55 @@ var params = {
 
 
 
-async function fetchS3ImageLink(s3) {
- return s3.listObjects.promise(); 
-}
-// var S3 = require('aws-sdk/clients/s3');
+async function fetchS3ImageLink(buyername) {
+
+ let objects = await s3.listObjectsV2(params).promise(); 
+
+ for( const object of objects.Contents){
+   console.log(object);
+  let tags = await s3.getObjectTagging({ Bucket: "mw2-codes", Key: object.Key}).promise(); 
+  console.log(tags);
+  if(tags.TagSet.length == 0){
+    s3.putObjectTagging({ Bucket: "mw2-codes", Key: object.Key, Tagging: { TagSet: [{Key: "User",Value: buyername }]}},function(err, data) {
+      if (err) throw(err, err.stack); // an error occurred
+      else     console.log(`Succesfully Updated the tag for ${object.Key}`) 
+    })
+    //return the code 
+    return `https://mw2-codes.s3.amazonaws.com/${object.Key}` 
+  }
+   }
+   throw "No more Codes Left in the S3 Bucket";
+}; 
 
 
 
 async function handleOrder(order,eBayApi){
     //Notify the buyer with a message 
     
-    //Upload the image as well 
-
-    console.log("We are in the handler Ordder Function");
     let count = order.lineItems.length; 
 
     for(const item of order.lineItems){
     //console.log(`LegacyItemId ${item.legacyItemId} legacyOrderID ${order.legacyOrderId} ${item.lineItemId} ${order.buyer.username}`);
     //let image = await getImageCode(eBayApi); 
 
-    fetchS3ImageLink(); 
+   let s3imagelink = await fetchS3ImageLink(order.buyer.username); 
 
-   // sendMessage(messageBody, order.buyer.username);
+   let messageResult = await sendMessage(item.legacyItemId,s3imagelink, order.buyer.username,eBayApi).catch(e => { throw e}); 
+   console.log(messageResult);
+
+   //Record the order in the dynamomoDB table
+   let result = await recordTransaction(order.legacyOrderId, s3imagelink,order.buyer.username); 
+   console.log("RESULT FINISHED");
         
     };
   };
 
 
-  async function sendMessage(s3link,buyername) {
+  async function sendMessage(itemId, s3link,buyername,eBayApi) {
     const catPic = "https://i.ebayimg.com/00/s/OTQwWDcwNQ==/z/xsoAAOSwhchjgdKg/$_1.JPG";
     // Send Message
     let result = await eBayApi.trading.AddMemberMessageAAQToPartner({
-        ItemID: item.legacyItemId,
+        ItemID: itemId,
         MemberMessage: {
             Body: constructMessageBody(s3link),
             QuestionType: "CustomizedSubject",
@@ -57,12 +76,11 @@ async function handleOrder(order,eBayApi){
     });
   }
 
-  async function constructMessageBody(s3link) {
+   function constructMessageBody(s3link) {
     const bkLink = "https://callofduty.com/bkredeem"
-    return `Enjoy :) Don't forget to rate my ebay profile for a chance to win a Jack Links Ghillie FULL SET🔥 DAILY GIVEAWAYS!!
-    Here is your code!! ${s3link}.toString()
-    Go to ${bkLink} to redeem your code!
-    If the code is too blurry, contact me`; 
+    return `Enjoy :) Don't forget to rate my shop for a chance to win a Jack Links Ghillie FULL SET🔥 DAILY GIVEAWAYS!!
+    Here is your code!! ${s3link}
+    Go to ${bkLink} to redeem your code!`; 
   }
   
 
