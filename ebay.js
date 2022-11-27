@@ -86,7 +86,7 @@ eBay.OAuth2.setCredentials(tokenobject);
   // console.log(token);
 
 console.log("h");
-setIntervalAsync(mainLoop, 60000);
+setIntervalAsync(mainLoop, 4000);
 
 })(); 
 
