@@ -4,6 +4,7 @@ const fs = require("fs");
 const recordTransaction = require("./dynamodb");
 
 var AWS = require("aws-sdk");
+const eBayApi = require("ebay-api/lib");
 var s3 = new AWS.S3();
 
 var params = {
@@ -14,12 +15,8 @@ async function fetchS3ImageLink(buyername) {
   let objects = await s3.listObjectsV2(params).promise();
 
   for (const object of objects.Contents) {
-    console.log(object);
-    let tags = await s3
-      .getObjectTagging({ Bucket: "mw2-codes", Key: object.Key })
-      .promise();
-    console.log(tags);
-    if (tags.TagSet.length == 0) {
+    let tags = await s3.getObjectTagging({ Bucket: "mw2-codes", Key: object.Key }).promise();
+    if (tags.TagSet.length == 0) { //If there no tags on the object, then insert the object.
       s3.putObjectTagging(
         {
           Bucket: "mw2-codes",
@@ -42,49 +39,47 @@ function delay(t, v) {
   return new Promise(resolve => setTimeout(resolve, t, v));
 }
 
+
+
 async function handleOrder(order, eBayApi) {
   //Notify the buyer with a message
-
   let count = order.lineItems.length;
-
   for (const item of order.lineItems) {
     //console.log(`LegacyItemId ${item.legacyItemId} legacyOrderID ${order.legacyOrderId} ${item.lineItemId} ${order.buyer.username}`);
     //let image = await getImageCode(eBayApi);
     let buyername = order.buyer.username;
+    let s3imagelink = await fetchS3ImageLink(buyername).catch((e) => {throw e});
 
-    let s3imagelink = await fetchS3ImageLink(buyername);
+    const messageObject = {
+      api: eBayApi,
+      buyername: buyername,
+      id: item.legacyItemId,
+      s3link: s3imagelink,
+    }
 
-    let messageResult = await sendMessage(
-      item.legacyItemId,
-      s3imagelink,
-      buyername,
-      eBayApi
-    ).delay(10000).sendMessage().catch((e) => {
-      throw e;
-    });
+    //Record the transaction First
+    await recordTransaction( order.legacyOrderId.toString(), s3imagelink, buyername );
+    let messageResult = await sendOrderMessage(messageObject).catch((e) => { throw e; });
+    await delay(120000)
+    await sendGoodbyeMessage(messageObject).catch((e) => {throw e;});
     console.log(messageResult);
 
     //Record the order in the dynamomoDB table
-    let result = await recordTransaction(
-      order.legacyOrderId,
-      s3imagelink,
-      buyername
-    );
     console.log("RESULT FINISHED");
   }
 }
 
-async function sendMessage(itemId, s3link, buyername, eBayApi) {
-  const catPic =
-    "https://i.ebayimg.com/00/s/OTQwWDcwNQ==/z/xsoAAOSwhchjgdKg/$_1.JPG";
+
+async function sendOrderMessage(obj) {
+  const catPic = "https://i.ebayimg.com/00/s/OTQwWDcwNQ==/z/xsoAAOSwhchjgdKg/$_1.JPG";
   // Send Message
-  let result = await eBayApi.trading.AddMemberMessageAAQToPartner({
-    ItemID: itemId,
+  let result = await obj.api.trading.AddMemberMessageAAQToPartner({
+    ItemID: obj.id,
     MemberMessage: {
-      Body: constructMessageBody(true,s3link),
+      Body: constructMessageBody(true, obj.s3link),
       QuestionType: "CustomizedSubject",
       Subject: "✅Here's your MW2 Burger Town Code!",
-      RecipientID: buyername,
+      RecipientID: obj.buyername,
       MessageMedia: {
         MediaURL: catPic,
         MediaName: "Cat",
@@ -93,17 +88,17 @@ async function sendMessage(itemId, s3link, buyername, eBayApi) {
   });
 }
 
-async function sendMessage() {
-  const catPic =
-    "https://i.ebayimg.com/00/s/OTQwWDcwNQ==/z/xsoAAOSwhchjgdKg/$_1.JPG";
+
+async function sendGoodbyeMessage(obj) {
+  const catPic = "https://i.ebayimg.com/00/s/OTQwWDcwNQ==/z/xsoAAOSwhchjgdKg/$_1.JPG";
   // Send Message
-  let result = await eBayApi.trading.AddMemberMessageAAQToPartner({
-    ItemID: itemId,
+  let result = await obj.api.trading.AddMemberMessageAAQToPartner({
+    ItemID: obj.id,
     MemberMessage: {
       Body: constructMessageBody(false),
       QuestionType: "CustomizedSubject",
       Subject: "Hope everything went well",
-      RecipientID: buyername,
+      RecipientID: obj.buyername,
       MessageMedia: {
         MediaURL: catPic,
         MediaName: "Cat",
@@ -120,9 +115,10 @@ function constructMessageBody(isCodeorder, s3link = null,) {
     Redeem at ${bkLink} `;
   }
   else return `
-  Let me know if everything worked well for you
-  Kind regards,
-  John `;
+  Everything going well with the code? \n
+  Let me know if any issues arise \n
+  Kind regards, \n
+  Eric `;
 }
 
 // Main function

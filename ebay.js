@@ -92,17 +92,13 @@ setIntervalAsync(mainLoop, 4000);
 
 
 async function mainLoop(){
-  console.log("hi");
-console.log("Am I runinng");
-  let ordersResult= await eBay.sell.fulfillment.getOrders({ 
+  console.log("looping...");
+  let ordersResult= await eBay.sell.fulfillment.getOrders({
     filter: "orderfulfillmentstatus:%7BNOT_STARTED%7CIN_PROGRESS%7D" });
 
   for (const e of ordersResult.orders){
     console.log(e);
     if(e.orderPaymentStatus === "PAID" && e.orderFulfillmentStatus === "NOT_STARTED" ){
-      console.log("this guy payed and his order isn't shipped");
-
-
         let params = {
           TableName: 'orders',
           Key: {
@@ -112,11 +108,11 @@ console.log("Am I runinng");
         let check = await ddb.getItem(params).promise().catch(e => {throw e});
 
       //If order ID doesn't exist, add new order
-      console.log("chcck:" + check);
-      console.log("Is there a value in dymnabodb?" + check);
-      console.log(check.item);
+      console.log("Is there a value in dymnabodb?: " + check.item);
       if(!check.Item){
-      handleOrder(e,eBay)
+          console.log("There is an Item")
+          handleOrder(e,eBay)
+
       }
       // Invoke Function to Handle newOrder(); 
 
