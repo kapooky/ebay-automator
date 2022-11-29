@@ -1,10 +1,7 @@
-const sqlite3 = require('sqlite3');
 const eBayApi = require('ebay-api');
 const fs = require("fs");
 const tokenobject = require("./data.json"); 
-const path = require('path');
-const FormData = require('form-data');
-const { setIntervalAsync, clearIntervalAsync } = require('set-interval-async');
+const { setIntervalAsync} = require('set-interval-async');
 
 
 var AWS = require('aws-sdk');
@@ -47,9 +44,6 @@ function updateTokenJSON(token) {
 }
 
 
-const { default: OAuth2 } = require('ebay-api/lib/auth/oAuth2');
-const { x } = require('tar');
-const promiseRetry = require('promise-retry');
 const eBay = new eBayApi({
     appId: "TariqAzm-sandbox-PRD-d7db68d0a-ec165db0",
     devId: "79fd9488-d650-4518-a549-1829967ab2e5",
@@ -86,7 +80,7 @@ eBay.OAuth2.setCredentials(tokenobject);
   // console.log(token);
 
 console.log("h");
-setIntervalAsync(mainLoop, 4000);
+setIntervalAsync(mainLoop, 10000);
 
 })(); 
 
@@ -111,14 +105,11 @@ async function mainLoop(){
       console.log("Is there a value in dymnabodb?: " + check.item);
       if(!check.Item){
           console.log("There is an Item")
-          handleOrder(e,eBay)
+          handleOrder(e,eBay);
+          break; //Exit out of the loop,
 
       }
-      // Invoke Function to Handle newOrder(); 
-
-       // orderId  legacyOrderId
-      // Push orderId to array 
     }
-  };
+  }
 }
 

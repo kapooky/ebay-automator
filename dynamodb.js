@@ -17,7 +17,6 @@ async function recordTransaction(orderid,url,username){
        console.log(e);
        throw e;
    })
-
 }
 
 module.exports = recordTransaction
