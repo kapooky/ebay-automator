@@ -42,8 +42,9 @@ function delay(t, v) {
 
 async function handleOrder(order, eBayApi) {
   //Notify the buyer with a message
-  let count = order.lineItems.length;
-  for (const item of order.lineItems) {
+  let count = order.lineItems[0].quantity;
+  console.log("the Quantity is " + count)
+  for(let i = 0; i < count; i ++){
     //console.log(`LegacyItemId ${item.legacyItemId} legacyOrderID ${order.legacyOrderId} ${item.lineItemId} ${order.buyer.username}`);
     //let image = await getImageCode(eBayApi);
     let buyername = order.buyer.username;
@@ -52,7 +53,7 @@ async function handleOrder(order, eBayApi) {
     const messageObject = {
       api: eBayApi,
       buyername: buyername,
-      id: item.legacyItemId,
+      id: order.lineItems[i].legacyItemId,
       s3link: s3imagelink,
     }
 
