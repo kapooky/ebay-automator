@@ -6,6 +6,9 @@ var params = {
     Bucket: "mw2-codes",
 };
 
+// kapwo42
+// arcticpe_78
+
 //Quick Script to delete a tag from an object
 (async () => {
     let objects = await s3.listObjectsV2(params).promise();
@@ -13,7 +16,7 @@ var params = {
        // console.log(object);
         let tags = await s3.getObjectTagging({Bucket: "mw2-codes", Key: object.Key}).promise();
       //  console.log(tags);
-        if(tags.TagSet[0].Value === 'arcticpe_78'){
+        if(tags.TagSet[0].Value === 'kapwo42'){
             console.log("found one")
             s3.deleteObjectTagging(
                 {

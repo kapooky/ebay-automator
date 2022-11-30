@@ -80,10 +80,6 @@ async function sendOrderMessage(obj) {
       QuestionType: "CustomizedSubject",
       Subject: "✅Here's your MW2 Burger Town Code!",
       RecipientID: obj.buyername,
-      MessageMedia: {
-        MediaURL: catPic,
-        MediaName: "Cat",
-      },
     },
   });
 }
