@@ -4,7 +4,6 @@ const fs = require("fs");
 const recordTransaction = require("./dynamodb");
 
 var AWS = require("aws-sdk");
-const eBayApi = require("ebay-api/lib");
 var s3 = new AWS.S3();
 
 var params = {

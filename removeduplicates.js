@@ -13,7 +13,7 @@ var params = {
        // console.log(object);
         let tags = await s3.getObjectTagging({Bucket: "mw2-codes", Key: object.Key}).promise();
       //  console.log(tags);
-        if(tags.TagSet[0].Value === 'elljoh9853'){
+        if(tags.TagSet[0].Value === 'matmelbe0'){
             console.log("found one")
             s3.deleteObjectTagging(
                 {
