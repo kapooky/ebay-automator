@@ -60,13 +60,14 @@ async function sendOrderMessage(obj) {
       body+="\n"
     }
     body+= "Reedem  at: " + bkLink;
+    body+="\n Thank you for your purchase!"
 
   console.log(body);
   let result = await obj.api.trading.AddMemberMessageAAQToPartner({
     ItemID: obj.id,
     Mem6berMessage: {
-      //Body: body.toString(),
-      Body: "hello world",
+      Body: body.toString(),
+    //  Body: "hello world",
       QuestionType: "CustomizedSubject",
       Subject: "✅Here's your MW2 Burger Town Code!",
       RecipientID: obj.buyername,

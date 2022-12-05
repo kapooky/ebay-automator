@@ -1,11 +1,11 @@
 const eBayApi = require('ebay-api');
 const fs = require("fs");
-const tokenArray = require("./data.json");
+const tokenObject = require("./data.json");
 const { setIntervalAsync} = require('set-interval-async');
 
 const handleOrder = require('./handleOrder.js');
 
-currentTokenObject = tokenArray;
+currentTokenObject = tokenObject;
 var AWS = require('aws-sdk');
 AWS.config.update({region: 'us-east-1'});
 let ddb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
@@ -85,20 +85,20 @@ setIntervalAsync(mainLoop, 10000);
 
 let count = 0
 function incrementArray(){
-    if(count > tokenArray.length) {
+    if(count > tokenObject.length) {
         count = 0
         return;
     }
   return  count++
 }
 
-eBay.OAuth2.setCredentials(tokenArray[count]);
+eBay.OAuth2.setCredentials(tokenObject);
 async function mainLoop(){
-    if(count >= tokenArray.length) count = 0;
-    //console.log(tokenArray);
+//    if(count >= tokenObject.length) count = 0;
+    //console.log(tokenObject);
 
- //   console.log(tokenArray)
-  console.log("looping..." + tokenArray[count].name);
+ //   console.log(tokenObject)
+ // console.log("looping..." + tokenObject[count].name);
   let ordersResult= await eBay.sell.fulfillment.getOrders({
     filter: "orderfulfillmentstatus:%7BNOT_STARTED%7CIN_PROGRESS%7D" }).catch((e) => {
       console.log(e);
