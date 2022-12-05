@@ -1,14 +1,15 @@
 const eBayApi = require('ebay-api');
 const fs = require("fs");
-const tokenobject = require("./data.json"); 
+const tokenArray = require("./data.json");
 const { setIntervalAsync} = require('set-interval-async');
 
+const handleOrder = require('./handleOrder.js');
 
+currentTokenObject = tokenArray;
 var AWS = require('aws-sdk');
 AWS.config.update({region: 'us-east-1'});
 let ddb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
 
-const handleOrder = require('./handleOrder.js');
 
 function jsonReader(filePath, cb) {
   fs.readFile(filePath, (err, fileData) => {
@@ -67,11 +68,10 @@ const eBay = new eBayApi({
 }); 
 
 // listen to refresh token event
-eBay.OAuth2.on('refreshAuthToken', (token) => {
-  updateTokenJSON(token);
-});
+// eBay.OAuth2.on('refreshAuthToken', (token) => {
+//  // updateTokenJSON(token);
+// });
 
-eBay.OAuth2.setCredentials(tokenobject);
 
 (async () => {
   // const url = eBay.oAuth2.generateAuthUrl();
@@ -79,16 +79,30 @@ eBay.OAuth2.setCredentials(tokenobject);
   // const token = await eBay.OAuth2.getToken("v^1.1#i^1#p^3#f^0#I^3#r^1#t^Ul41Xzk6RUExNzJBQjJFNUQ5RDUxNzg3MUYxM0ZFRjRFNDhBRjRfMV8xI0VeMjYw");
   // console.log(token);
 
-console.log("h");
 setIntervalAsync(mainLoop, 10000);
 
 })(); 
 
+let count = 0
+function incrementArray(){
+    if(count > tokenArray.length) {
+        count = 0
+        return;
+    }
+  return  count++
+}
 
+eBay.OAuth2.setCredentials(tokenArray[count]);
 async function mainLoop(){
-  console.log("looping...");
+    if(count >= tokenArray.length) count = 0;
+    //console.log(tokenArray);
+
+ //   console.log(tokenArray)
+  console.log("looping..." + tokenArray[count].name);
   let ordersResult= await eBay.sell.fulfillment.getOrders({
-    filter: "orderfulfillmentstatus:%7BNOT_STARTED%7CIN_PROGRESS%7D" });
+    filter: "orderfulfillmentstatus:%7BNOT_STARTED%7CIN_PROGRESS%7D" }).catch((e) => {
+      console.log(e);
+  })
 
   for (const e of ordersResult.orders){
     console.log(e);

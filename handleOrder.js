@@ -1,7 +1,8 @@
 const path = require("path");
 const FormData = require("form-data");
 const fs = require("fs");
-const recordTransaction = require("./dynamodb");
+const {recordTransaction} = require("./dynamodb");
+const {fetchcodes} = require("./dynamodb");
 
 var AWS = require("aws-sdk");
 var s3 = new AWS.S3();
@@ -10,73 +11,60 @@ var params = {
   Bucket: "mw2-codes",
 };
 
-async function fetchS3ImageLink(buyername) {
-  let objects = await s3.listObjectsV2(params).promise();
-
-  for (const object of objects.Contents) {
-    let tags = await s3.getObjectTagging({ Bucket: "mw2-codes", Key: object.Key }).promise();
-    if (tags.TagSet.length == 0) { //If there no tags on the object, then insert the object.
-      s3.putObjectTagging(
-        {
-          Bucket: "mw2-codes",
-          Key: object.Key,
-          Tagging: { TagSet: [{ Key: "User", Value: buyername }] },
-        },
-        function (err, data) {
-          if (err) throw (err, err.stack); // an error occurred
-          else console.log(`Succesfully Updated the tag for ${object.Key}`);
-        }
-      );
-      //return the code
-      return `https://mw2-codes.s3.amazonaws.com/${object.Key}`;
-    }
-  }
-  throw "No more codes Left in the S3 Bucket";
-}
 // https://stackoverflow.com/questions/39538473/using-settimeout-on-promise-chain
 function delay(t, v) {
   return new Promise(resolve => setTimeout(resolve, t, v));
 }
 
-
-
 async function handleOrder(order, eBayApi) {
   //Notify the buyer with a message
   let count = order.lineItems[0].quantity;
-  console.log("the Quantity is " + count)
-  for(let i = 0; i < count; i ++){
+  console.log("the Quantity is " + count);
+
     //console.log(`LegacyItemId ${item.legacyItemId} legacyOrderID ${order.legacyOrderId} ${item.lineItemId} ${order.buyer.username}`);
     //let image = await getImageCode(eBayApi);
     let buyername = order.buyer.username;
-    let s3imagelink = await fetchS3ImageLink(buyername).catch((e) => {throw e});
+    let address = order.buyer.taxAddress;
+    const codes  = await fetchcodes(count,buyername);
+  //  s3links = await  fetchs3Links(buyername, count).catch((e) => {throw e});
 
     const messageObject = {
       api: eBayApi,
       buyername: buyername,
-      id: order.lineItems[i].legacyItemId,
-      s3link: s3imagelink,
+      id: order.lineItems[0].legacyItemId,
+      s3links: codes,
     }
 
     //Record the transaction First
-    await recordTransaction( order.legacyOrderId.toString(), s3imagelink, buyername );
-    let messageResult = await sendOrderMessage(messageObject).catch((e) => { throw e; });
-    await delay(120000)
-    await sendGoodbyeMessage(messageObject).catch((e) => {throw e;});
+    await recordTransaction( order.legacyOrderId.toString(), codes.toString(), buyername,address);
+    let messageResult = await sendOrderMessage(messageObject).catch((e) => {
+      console.log();
+      throw e; });
+    await delay(120000);
+    sendGoodbyeMessage(messageObject).catch((e) => {
+      console.log(e);
+      throw e;});
     console.log(messageResult);
 
     //Record the order in the dynamomoDB table
     console.log("RESULT FINISHED");
-  }
 }
 
 
 async function sendOrderMessage(obj) {
-  const catPic = "https://i.ebayimg.com/00/s/OTQwWDcwNQ==/z/xsoAAOSwhchjgdKg/$_1.JPG";
-  // Send Message
+  const bkLink = "https://callofduty.com/bkredeem";
+  let body = "Here are your code(s):\n"
+    for(let i = 0; i < obj.s3links.length; i++){
+      body+= obj.s3links[i];
+      body+="\n"
+    }
+    body+= "Reedem  at: " + bkLink;
+
+  console.log(body);
   let result = await obj.api.trading.AddMemberMessageAAQToPartner({
     ItemID: obj.id,
-    MemberMessage: {
-      Body: constructMessageBody(true, obj.s3link),
+    Mem6berMessage: {
+      Body: body.toString(),
       QuestionType: "CustomizedSubject",
       Subject: "✅Here's your MW2 Burger Town Code!",
       RecipientID: obj.buyername,
@@ -84,21 +72,20 @@ async function sendOrderMessage(obj) {
   });
 }
 
-
 async function sendGoodbyeMessage(obj) {
   const catPic = "https://i.ebayimg.com/00/s/OTQwWDcwNQ==/z/xsoAAOSwhchjgdKg/$_1.JPG";
   // Send Message
   let result = await obj.api.trading.AddMemberMessageAAQToPartner({
     ItemID: obj.id,
     MemberMessage: {
-      Body: constructMessageBody(false),
+      Body:  `
+  Everything going well with the code? \n
+  Let me know if any issues arise \n
+  Kind regards, \n
+  John `,
       QuestionType: "CustomizedSubject",
       Subject: "Hope everything went well",
       RecipientID: obj.buyername,
-      MessageMedia: {
-        MediaURL: catPic,
-        MediaName: "Cat",
-      },
     },
   });
 }
@@ -110,11 +97,7 @@ function constructMessageBody(isCodeorder, s3link = null,) {
     Here is your code: ${s3link} \n
     Redeem at ${bkLink} `;
   }
-  else return `
-  Everything going well with the code? \n
-  Let me know if any issues arise \n
-  Kind regards, \n
-  Eric `;
+  else return
 }
 
 // Main function
