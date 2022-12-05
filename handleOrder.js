@@ -38,7 +38,8 @@ async function handleOrder(order, eBayApi) {
 
     //Record the transaction First
     await recordTransaction( order.legacyOrderId.toString(), codes.toString(), buyername,address);
-    let messageResult = await sendOrderMessage(messageObject).catch((e) => {
+  await delay(2000);
+  let messageResult = await sendOrderMessage(messageObject).catch((e) => {
       console.log(e);
       throw e; });
     await delay(120000);
@@ -60,7 +61,7 @@ async function sendOrderMessage(obj) {
       body+="\n"
     }
     body+= "Reedem  at: " + bkLink;
-    body+="\n Thank you for your purchase!"
+    body+="\n Thank you for your purchase! And I hope we can get to see you again! Thank you again and take care! LALALALA"
 
   console.log(body);
   let result = await obj.api.trading.AddMemberMessageAAQToPartner({
