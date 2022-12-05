@@ -26,6 +26,7 @@ async function handleOrder(order, eBayApi) {
     let buyername = order.buyer.username;
     let address = order.buyer.taxAddress;
     const codes  = await fetchcodes(count,buyername);
+  console.log(codes)
   //  s3links = await  fetchs3Links(buyername, count).catch((e) => {throw e});
 
     const messageObject = {
@@ -38,7 +39,7 @@ async function handleOrder(order, eBayApi) {
     //Record the transaction First
     await recordTransaction( order.legacyOrderId.toString(), codes.toString(), buyername,address);
     let messageResult = await sendOrderMessage(messageObject).catch((e) => {
-      console.log();
+      console.log(e);
       throw e; });
     await delay(120000);
     sendGoodbyeMessage(messageObject).catch((e) => {
@@ -64,7 +65,8 @@ async function sendOrderMessage(obj) {
   let result = await obj.api.trading.AddMemberMessageAAQToPartner({
     ItemID: obj.id,
     Mem6berMessage: {
-      Body: body.toString(),
+      //Body: body.toString(),
+      Body: "hello world",
       QuestionType: "CustomizedSubject",
       Subject: "✅Here's your MW2 Burger Town Code!",
       RecipientID: obj.buyername,
