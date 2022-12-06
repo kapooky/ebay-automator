@@ -1,10 +1,7 @@
-const sqlite3 = require('sqlite3');
 const eBayApi = require('ebay-api');
 const fs = require("fs");
 const tokenobject = require("./data.json");
-const path = require('path');
-const FormData = require('form-data');
-const { setIntervalAsync, clearIntervalAsync } = require('set-interval-async');
+const { setIntervalAsync} = require('set-interval-async');
 
 
 var AWS = require('aws-sdk');
@@ -77,9 +74,9 @@ eBay.OAuth2.on('refreshAuthToken', (token) => {
     updateTokenJSON(token);
 });
 
+eBay.OAuth2.setCredentials(tokenobject);
 
 (async () => {
-    eBay.OAuth2.setCredentials(tokenobject);
 
     // const url = eBay.oAuth2.generateAuthUrl();
     // console.log('Open URL', url);

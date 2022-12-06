@@ -16,7 +16,31 @@ function delay(t, v) {
   return new Promise(resolve => setTimeout(resolve, t, v));
 }
 
+const sleepRequest = (milliseconds, originalRequest, api) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => resolve(api.req.instance(originalRequest)), milliseconds);
+  });
+};
+
+
+async function addInterceptions(api){
+  api.req.instance.interceptors.response.use(response => {
+    return response;
+  }, error => {
+    const { config, response: { status }} = error;
+    const originalRequest = config;
+
+    console.log(error);
+    console.log(status);
+    if (status === 420) {
+      return sleepRequest(1000, originalRequest);
+    } else {
+      return Promise.reject(error);
+    }
+  });
+}
 async function handleOrder(order, eBayApi) {
+  let add = await addInterceptions(eBayApi);
   //Notify the buyer with a message
   let count = order.lineItems[0].quantity;
   console.log("the Quantity is " + count);
@@ -33,21 +57,20 @@ async function handleOrder(order, eBayApi) {
       api: eBayApi,
       buyername: buyername,
       id: order.lineItems[0].legacyItemId,
-      s3links: codes,
+      s3links: codes
     }
 
     //Record the transaction First
     await recordTransaction( order.legacyOrderId.toString(), codes.toString(), buyername,address);
-  await delay(2000);
-  let messageResult = await sendOrderMessage(messageObject).catch((e) => {
+    let messageResult = await sendOrderMessage(messageObject).catch((e) => {
       console.log(e);
       throw e; });
-    await delay(120000);
+    await delay(12000);
     sendGoodbyeMessage(messageObject).catch((e) => {
       console.log(e);
       throw e;});
-    console.log(messageResult);
 
+    console.log(messageResult);
     //Record the order in the dynamomoDB table
     console.log("RESULT FINISHED");
 }
@@ -61,17 +84,16 @@ async function sendOrderMessage(obj) {
       body+="\n"
     }
     body+= "Reedem  at: " + bkLink;
-    body+="\n Thank you for your purchase! And I hope we can get to see you again! Thank you again and take care! LALALALA"
-
+    body+="\n Thank you for your purchase! And I hope get to see you again!";
   console.log(body);
+
   let result = await obj.api.trading.AddMemberMessageAAQToPartner({
     ItemID: obj.id,
-    Mem6berMessage: {
+    MemberMessage: {
       Body: body.toString(),
-    //  Body: "hello world",
       QuestionType: "CustomizedSubject",
       Subject: "✅Here's your MW2 Burger Town Code!",
-      RecipientID: obj.buyername,
+      RecipientID: obj.buyername
     },
   });
 }
@@ -89,7 +111,7 @@ async function sendGoodbyeMessage(obj) {
   John `,
       QuestionType: "CustomizedSubject",
       Subject: "Hope everything went well",
-      RecipientID: obj.buyername,
+      RecipientID: obj.buyername
     },
   });
 }
