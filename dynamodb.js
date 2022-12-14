@@ -4,6 +4,21 @@ AWS.config.update({region: 'us-east-1'});
 
 async function fetchcodes (quantity,buyername){
     const documentClient = new AWS.DynamoDB.DocumentClient();
+
+    const params = {
+        TableName: "codes",
+//    "ScanIndexForward": true,
+        IndexName: "status-code-index",
+        KeyConditionExpression : '#status = :value',
+        ExpressionAttributeNames: {
+            "#status": "status"
+        },
+        ExpressionAttributeValues: {
+            ":value": "new"
+        },
+        Limit: 1
+    };
+
     params.Limit = quantity;
 
     const result = await documentClient.query(params).promise();
@@ -17,7 +32,6 @@ async function fetchcodes (quantity,buyername){
         console.log(obj.code);
         codes.push(obj.code);
     }
-
     return codes;
 }
 
@@ -42,19 +56,6 @@ let updateCodesConsumed = async function (primaryKey,buyername){
     });
 }
 
-const params = {
-    TableName: "codes",
-//    "ScanIndexForward": true,
-    IndexName: "status-code-index",
-    KeyConditionExpression : '#status = :value',
-    ExpressionAttributeNames: {
-        "#status": "status"
-    },
-    ExpressionAttributeValues: {
-        ":value": "available"
-    },
-    Limit: 1
-};
 
 
 

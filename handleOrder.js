@@ -66,7 +66,7 @@ async function handleOrder(order, eBayApi) {
       console.log(e);
       throw e; });
     await delay(12000);
-    sendGoodbyeMessage(messageObject).catch((e) => {
+    await sendGoodbyeMessage(messageObject).catch((e) => {
       console.log(e);
       throw e;});
 
@@ -80,11 +80,11 @@ async function sendOrderMessage(obj) {
   const bkLink = "https://callofduty.com/bkredeem";
   let body = "Here are your code(s):\n"
     for(let i = 0; i < obj.s3links.length; i++){
-      body+= obj.s3links[i];
+      body+= obj.s3links[i].toString().replace(/-/g,"");
       body+="\n"
     }
     body+= "Reedem  at: " + bkLink;
-    body+="\n Thank you for your purchase! And I hope get to see you again!";
+    body+="\n Thank you for your purchase! And I hope I get to see you again!";
   console.log(body);
 
   let result = await obj.api.trading.AddMemberMessageAAQToPartner({
