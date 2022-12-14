@@ -148,7 +148,7 @@ async function invokeAccounts(main,kapooky102){
     setIntervalAsync(() => {mainLoop(main)},10000);
     setIntervalAsync(() => {mainLoop(kapooky102)},13000);
     setIntervalAsync(() => {mainLoop(daniella)},16000);
-    setIntervalAsync(() => {mainLoop(tariqazmatdotdev)},1500);
+    setIntervalAsync(() => {mainLoop(tariqazmatdotdev)},15000);
 }
 
 async function mainLoop(api){

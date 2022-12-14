@@ -1,0 +1,31 @@
+{
+  "name": "ebay-sold",
+  "version": "1.0.0",
+  "description": "Just",
+  "main": "dynamodb.js",
+  "dependencies": {
+    "aws-sdk": "^2.1261.0",
+    "axios-retry": "^3.3.1",
+    "csv-parse": "^5.3.3",
+    "ebay-api": "^7.1.2",
+    "fast-xml-parser": "^3.21.1",
+    "form-data": "^4.0.0",
+    "set-interval-async": "^3.0.2",
+    "sqlite3": "^5.1.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kapooky/ebay-automator.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kapooky/ebay-automator/issues"
+  },
+  "homepage": "https://github.com/kapooky/ebay-automator#readme"
+}
