@@ -66,7 +66,6 @@ async function recordTransaction(orderid,url,username,address){
         Item: {
           'orderid' : {S: orderid},
           'username' : {S: username},
-          'imageurl': {S: url},
           'date': { S: new Date().toString()},
           'address': {S: JSON.stringify(address)}
         }
