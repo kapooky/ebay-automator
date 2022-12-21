@@ -3,6 +3,7 @@ const {setIntervalAsync} = require("set-interval-async");
 AWS.config.update({region: 'us-east-1'});
 
 async function fetchcodes (quantity,buyername){
+    console.log("the quantity is" + quantity);
     const documentClient = new AWS.DynamoDB.DocumentClient();
 
     const params = {
@@ -25,14 +26,36 @@ async function fetchcodes (quantity,buyername){
 
     // Update the codes consumed
     let codes = [];
+    let links = [];
     for (const obj of result.Items){
         updateCodesConsumed(obj.code, buyername).catch((e) => {
             throw `${obj.code} could not be marked as consumed. Something went wrong`
         })
         console.log(obj.code);
         codes.push(obj.code);
+        if (typeof obj.link!== 'undefined') {
+            console.log("Object isn't undefined");
+            links.push(obj.link);
+
+            //Update the ACL on that object as well
+            console.log("any object" + obj.link)
+            publicACL(obj.link.split('/').pop())
+        }
     }
-    return codes;
+    return {codes:codes, links:links};
+}
+
+async function publicACL(key){
+    let params = {
+        Bucket: 'mw2-codes-new', /* required */
+        Key: key, /* required */
+        ACL: "public-read"
+    }
+    let s3 = new AWS.S3();
+
+    s3.putObjectAcl(params).promise().catch((e) => {
+        console.log(e)
+    })
 }
 
 let updateCodesConsumed = async function (primaryKey,buyername){

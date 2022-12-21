@@ -49,7 +49,8 @@ async function handleOrder(order, eBayApi) {
     //let image = await getImageCode(eBayApi);
     let buyername = order.buyer.username;
     let address = order.buyer.taxAddress;
-    const codes  = await fetchcodes(count,buyername);
+    const { codes, links } = await fetchcodes(count,buyername)
+
   console.log(codes)
   //  s3links = await  fetchs3Links(buyername, count).catch((e) => {throw e});
 
@@ -57,7 +58,8 @@ async function handleOrder(order, eBayApi) {
       api: eBayApi,
       buyername: buyername,
       id: order.lineItems[0].legacyItemId,
-      s3links: codes
+      s3links: codes,
+      links: links
     }
 
     //Record the transaction First
@@ -85,6 +87,13 @@ async function sendOrderMessage(obj) {
     }
     body+= "Reedem  at: " + bkLink;
     body+="\n Thank you for your purchase! And I hope I get to see you again!";
+    if(obj.links){
+      body+='\n\n P.S: Are you getting the error, "Code needs to be 12-15 characters long"?';
+      body+= "\n" + "If so, please manually enter the code from the raw image link(s) below👇" + "\n";
+      obj.links.map(link=> {
+        body+= link + "\n";
+      })
+    }
   console.log(body);
 
   let result = await obj.api.trading.AddMemberMessageAAQToPartner({
@@ -95,6 +104,8 @@ async function sendOrderMessage(obj) {
       Subject: "✅Here's your MW2 Burger Town Code!",
       RecipientID: obj.buyername
     },
+  }).catch((e) => {
+    console.log(e);
   });
 }
 
@@ -121,7 +132,7 @@ function constructMessageBody(isCodeorder, s3link = null,) {
   const bkLink = "https://callofduty.com/bkredeem";
   return `
     Here is your code: ${s3link} \n
-    Redeem at ${bkLink} `;
+    Redeem at ${bkLink}`;
   }
   else return
 }

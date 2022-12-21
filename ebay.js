@@ -157,7 +157,7 @@ async function mainLoop(api){
         filter: "orderfulfillmentstatus:%7BNOT_STARTED%7CIN_PROGRESS%7D" });
 
     for (const e of ordersResult.orders){
-        console.log(`Unshipped order in ${api.name} account from ${e.buyer.username}`);
+        console.log(`Unshipped order in ${api.name} account from ${e.buyer.username}, Quantity: ${e.lineItems[0].quantity} `);
         if(e.orderPaymentStatus === "PAID" && e.orderFulfillmentStatus === "NOT_STARTED" ){
             let params = {
                 TableName: 'orders',

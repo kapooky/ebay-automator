@@ -2,6 +2,7 @@ var AWS = require('aws-sdk');
 const {setIntervalAsync} = require("set-interval-async");
 AWS.config.update({region: 'us-east-1'});
 
+const username = "mw2codesforyou";
 const updateParams = {
     TableName: "codes",
 //    "ScanIndexForward": true,
@@ -11,7 +12,7 @@ const updateParams = {
         "#user": "user"
     },
     ExpressionAttributeValues: {
-        ":value": "kapooky100"
+        ":value": username
     },
 };
 
