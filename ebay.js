@@ -138,7 +138,7 @@ daniella.OAuth2.on('refreshAuthToken', (token) => {
 (async () => {
    // const url = eBay.oAuth2.generateAuthUrl();
    // console.log('Open URL', url);
-   //  const otherToken = await eBay.OAuth2.getToken("v^1.1#i^1#r^1#p^3#I^3#f^0#t^Ul41XzI6QzBGNjIxOERFQzUzNTcxNjQwQzRDNERDREUzREE3RjFfMF8xI0VeMjYw");
+   //  const otherToken = await eBay.OAuth2.getToken("v^1.1#i^1#f^0#I^3#r^1#p^3#t^Ul41XzA6NTUyQUM1QkI0NEUzMkQ2OEU4RTJFN0REOTVFRThGODFfMV8xI0VeMjYw");
    // console.log(JSON.stringify(otherToken));
     invokeAccounts(eBay,kapooky102);
 })();
@@ -153,11 +153,14 @@ async function invokeAccounts(main,kapooky102){
 
 async function mainLoop(api){
     console.log(`looping...${api.name}`);
-    let ordersResult= await api.sell.fulfillment.getOrders({
-        filter: "orderfulfillmentstatus:%7BNOT_STARTED%7CIN_PROGRESS%7D" });
+    let ordersResult= await api.sell.fulfillment.getOrder( "12-09495-60840" ).catch(e => {
+        throw e;
+    })
 
+    console.log(ordersResult)
     for (const e of ordersResult.orders){
         console.log(`Unshipped order in ${api.name} account from ${e.buyer.username}, Quantity: ${e.lineItems[0].quantity} `);
+
         if(e.orderPaymentStatus === "PAID" && e.orderFulfillmentStatus === "NOT_STARTED" ){
             let params = {
                 TableName: 'orders',

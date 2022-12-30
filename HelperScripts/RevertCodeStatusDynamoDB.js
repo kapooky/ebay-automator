@@ -2,7 +2,8 @@ var AWS = require('aws-sdk');
 const {setIntervalAsync} = require("set-interval-async");
 AWS.config.update({region: 'us-east-1'});
 
-const username = "mw2codesforyou";
+const usernames = ["kapooky100", "kapooky","kapooky100"];
+
 const updateParams = {
     TableName: "codes",
 //    "ScanIndexForward": true,
@@ -12,11 +13,12 @@ const updateParams = {
         "#user": "user"
     },
     ExpressionAttributeValues: {
-        ":value": username
+        ":value": "placeholder"
     },
 };
 
-async function query() {
+async function query(username) {
+    updateParams.ExpressionAttributeValues[":value"] = username
     const documentClient = new AWS.DynamoDB.DocumentClient();
     console.log(updateParams);
     return documentClient.query(updateParams).promise().catch((e) => {
@@ -28,16 +30,18 @@ async function query() {
 ( async () => {
 
     try {
-        let result = await query();
-        let promises = []
-        for (const item of result.Items) {
-           promises.push(updateCodesConsumed(item.code));
-        }
-        console.log(result);
-        await Promise.all(promises).then(result => {
+        for (const username of usernames) {
+            let result = await query(username);
+            let promises = []
+            for (const item of result.Items) {
+                promises.push(updateCodesConsumed(item.code));
+            }
             console.log(result);
-            console.log("Everything is complete")
-        })
+            await Promise.all(promises).then(result => {
+                console.log(result);
+                console.log("Everything is complete")
+            })
+        }
     }
     catch (e){
         console.log(e);

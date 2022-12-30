@@ -15,6 +15,9 @@ data.forEach((item) => {
     if(!item.maybeempty) delete item.maybeempty //need to remove empty items
     item.date = new Date().toString();
     docClient.put({TableName: 'codes', Item: item, ConditionExpression: "attribute_not_exists(code)",}, (err, res) => {
-        if(err) console.log(err)
+        if(err) {
+            console.log(err)
+            console.log(item)
+        }
     })
 })

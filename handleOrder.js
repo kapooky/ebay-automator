@@ -72,12 +72,25 @@ async function handleOrder(order, eBayApi) {
       console.log(e);
       throw e;});
 
+
     console.log(messageResult);
     //Record the order in the dynamomoDB table
     console.log("RESULT FINISHED");
 }
 
+async function markasShipped(order,api){
+   await api.sell.fulfillment.createShippingFulfillment(order.legacyOrderId, {
+    lineItems: [
+      {
+        lineItemId: order.lineItems[0].lineItemId,
+        quantity: order.lineItems[0].quantity
+      }
+    ]}).catch(e => {
+    console.log(e);
+    throw e;
+  })
 
+}
 async function sendOrderMessage(obj) {
   const bkLink = "https://callofduty.com/bkredeem";
   let body = "Here are your code(s):\n"
