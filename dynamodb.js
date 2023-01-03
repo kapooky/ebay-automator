@@ -2,7 +2,7 @@ var AWS = require('aws-sdk');
 const {setIntervalAsync} = require("set-interval-async");
 AWS.config.update({region: 'us-east-1'});
 
-async function fetchcodes (quantity,buyername){
+async function fetchcodes (quantity,buyername,tablename){
     console.log("the quantity is" + quantity);
     const documentClient = new AWS.DynamoDB.DocumentClient();
 
@@ -28,7 +28,7 @@ async function fetchcodes (quantity,buyername){
     let codes = [];
     let links = [];
     for (const obj of result.Items){
-        updateCodesConsumed(obj.code, buyername).catch((e) => {
+        updateCodesConsumed(obj.code, buyername,tablename).catch((e) => {
             throw `${obj.code} could not be marked as consumed. Something went wrong`
         })
         console.log(obj.code);
@@ -58,10 +58,10 @@ async function publicACL(key){
     })
 }
 
-let updateCodesConsumed = async function (primaryKey,buyername){
+let updateCodesConsumed = async function (primaryKey,buyername,tablename="codes"){
     const documentClient = new AWS.DynamoDB.DocumentClient();
     let updateParams = {
-        TableName: 'codes',
+        TableName: tablename,
         Key: { code: primaryKey},
         // Key: "code",
         UpdateExpression: 'set #status = :value, #user = :user',

@@ -153,7 +153,7 @@ async function invokeAccounts(main,kapooky102){
 
 async function mainLoop(api){
     console.log(`looping...${api.name}`);
-    let ordersResult= await api.sell.fulfillment.getOrder( "12-09495-60840" ).catch(e => {
+    let ordersResult= await api.sell.fulfillment.getOrders().catch(e => {
         throw e;
     })
 
