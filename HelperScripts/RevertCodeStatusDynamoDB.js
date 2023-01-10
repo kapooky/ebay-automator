@@ -1,8 +1,10 @@
 var AWS = require('aws-sdk');
 const {setIntervalAsync} = require("set-interval-async");
 AWS.config.update({region: 'us-east-1'});
+var s3 = new AWS.S3();
 
-const usernames = ["kapooky100", "kapooky","kapooky100"];
+
+const usernames = ["kapooky102","mw2codesforyou", "kapooky","kapooky100"];
 
 const updateParams = {
     TableName: "codes",
@@ -26,6 +28,17 @@ async function query(username) {
         throw e
     });
 }
+async function putACL(url){
+    let keyname = url.split('/').pop();
+    let params = {
+        Bucket: 'mw2-codes-new', /* required */
+        Key: keyname, /* required */
+        ACL: "authenticated-read"
+    }
+    let result = await s3.putObjectAcl(params).promise();
+    console.log("The result is: ")
+    console.log(result);
+}
 
 ( async () => {
 
@@ -34,7 +47,8 @@ async function query(username) {
             let result = await query(username);
             let promises = []
             for (const item of result.Items) {
-                promises.push(updateCodesConsumed(item.code));
+               promises.push(updateCodesConsumed(item.code));
+               promises.push(putACL(item.link));
             }
             console.log(result);
             await Promise.all(promises).then(result => {

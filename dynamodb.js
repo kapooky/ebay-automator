@@ -7,7 +7,7 @@ async function fetchcodes (quantity,buyername,tablename){
     const documentClient = new AWS.DynamoDB.DocumentClient();
 
     const params = {
-        TableName: "codes",
+        TableName: tablename,
 //    "ScanIndexForward": true,
         IndexName: "status-code-index",
         KeyConditionExpression : '#status = :value',
@@ -33,7 +33,7 @@ async function fetchcodes (quantity,buyername,tablename){
         })
         console.log(obj.code);
         codes.push(obj.code);
-        if (typeof obj.link!== 'undefined') {
+        if (obj.link) {
             console.log("Object isn't undefined");
             links.push(obj.link);
 
@@ -67,7 +67,7 @@ let updateCodesConsumed = async function (primaryKey,buyername,tablename="codes"
         UpdateExpression: 'set #status = :value, #user = :user',
         ExpressionAttributeNames: {'#status' : 'status', '#user' : 'user'},
         ExpressionAttributeValues: {
-            ':value' : "consumed",
+            ':value' : "consumed", //
             ':user' : buyername
         }
     };
@@ -108,9 +108,12 @@ async function recordTransaction(orderid,url,username,address){
 
 })();
 
-
+function delay(t, v) {
+    return new Promise(resolve => setTimeout(resolve, t, v));
+}
 
 
 
 exports.recordTransaction = recordTransaction
 exports.fetchcodes = fetchcodes
+exports.delay = delay

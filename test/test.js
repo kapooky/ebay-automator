@@ -29,9 +29,10 @@ describe('Account Class', () => {
         const account  = new Account([],"Tariq",tariqazmatdev);
       //  console.log(tariqazmatdev);
         await account.api.sell.fulfillment.getOrders({}).then(x => {
-            console.log(x)
+           // console.log(x)
         }).catch(e => {
             console.log(e);
+            throw e;
         });
         //    Account.push('emoji');
        // let value = Account.popoff();
@@ -43,15 +44,17 @@ describe('Account Class', () => {
 })
 
 describe('Testing the Order Class', () => {
-    it('hello', () => {
-        console.log("hello world");
-    })
-
-    it('checklistings should return the default value', async () => {
+    it('determineListings should return the default value', async () => {
         const account  = new Account([],"Tariq",tariqazmatdev);
+
+        const handleOrderMock = jest.spyOn(Order.prototype, 'handleOrder')
+            .mockImplementation(() =>{
+                console.log("Handle Order function is being mocked")
+                return 1;
+            })
         const order = new Order(account.api, [], "null");
 
-        const value = order.checkListings({lineItems:[{legacyItemID:"275586756168"}]})
+        const value = order.determineListings({lineItems:[{legacyItemID:"275586756168"}]})
         expect(value).toEqual(order.DEFAULT_LISTING)
     });
 
@@ -59,7 +62,7 @@ describe('Testing the Order Class', () => {
         const account  = new Account([],"Tariq",tariqazmatdev);
         const order = new Order(account.api, [], "null");
 
-        const value = order.checkListings({lineItems:[{legacyItemID:"275586756168"}]})
+        const value = order.determineListings({lineItems:[{legacyItemID:"275586756168"}]})
         expect(order.DEFAULT_LISTING.quantityMultiplier).toEqual(1)
     });
 
@@ -67,7 +70,7 @@ describe('Testing the Order Class', () => {
         const account  = new Account([],"Tariq",tariqazmatdev);
         const order = new Order(account.api, [], "null");
 
-        const value = order.checkListings({lineItems:[{legacyItemID:"275586756168"}]})
+        const value = order.determineListings({lineItems:[{legacyItemID:"275586756168"}]})
         expect(order.DEFAULT_LISTING.DBtable).toEqual("codes")
     });
 
@@ -83,19 +86,69 @@ describe('Testing the Order Class', () => {
         account.listings.push(obj);
         const order = new Order(account.api, account.listings, "null");
 
-        const value = order.checkListings({lineItems:[{legacyItemID:"275586756168"}]})
+        const value = order.determineListings({lineItems:[{legacyItemID:"275586756168"}]})
         expect(value.legacyItemID).toEqual(account.listings[0].legacyItemID)
     });
 
 });
 
-// describe("send alert test", () => {
-//     it("should send an alert",() => {
-//         const account  = new Account([],"Tariq",tariqazmatdev);
-//         account.sendAlert("hello world");
-//     });
-// });
-//
+describe("Testing an actual order without calling sendMessage", () => {
+    it("should send an alert",() => {
+     //   const account  = new Account([],"Tariq",tariqazmatdev);
+      //  account.sendAlert("hello world");
+    });
+
+    it("Example Mock",() => {
+        const handleOrderMock = jest.spyOn(Order.prototype, 'handleOrder')
+            .mockImplementation(() =>{
+                return 1;
+            })
+        handleOrderMock.mockRestore();
+
+
+        const hello = jest.spyOn(Order.prototype, 'markasShipped')
+            .mockImplementation(() =>{
+                console.log("MarkasShipped is being mocked")
+                return 1;
+            })
+        const recordTransaction  = jest.spyOn(Order.prototype, 'markasShipped')
+            .mockImplementation(() =>{
+                return 1;
+            })
+
+        const sendMessageMock= jest.spyOn(Order.prototype, 'sendGoodbyeMessage')
+            .mockImplementation(() =>{
+                console.log("SendGoodbyeMessage is being mocked.")
+                return 1;
+            })
+
+        const listing = [{
+            quantityMultiplier: 5,
+            legacyItemID: 275602449522,
+            Description: "5-Hour code",
+            DBtable: "codes",
+            Subject:"✅Here's your 5-hour XP codes!",
+            Instructions:"Redeem at https://callofduty.com/bkredeem"
+        }];
+        const account  = new Account(listing,"Tariq",tariqazmatdev);
+        const orderObject = {
+            buyer:{
+                username: "tariq",
+                taxAddress:"Lolipop Land"
+            },
+            lineItems:[
+                {
+                    lineItemId: 40404,
+                    quantity:1,
+                    legacyItemId:275602449522
+                }
+            ]
+        }
+        const order = new Order(account.api, account.listings, orderObject);
+        order.handleOrder()
+    });
+});
+
 
 
 

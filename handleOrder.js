@@ -12,9 +12,7 @@ var params = {
 };
 
 // https://stackoverflow.com/questions/39538473/using-settimeout-on-promise-chain
-function delay(t, v) {
-  return new Promise(resolve => setTimeout(resolve, t, v));
-}
+
 
 const sleepRequest = (milliseconds, originalRequest, api) => {
   return new Promise((resolve, reject) => {
@@ -100,7 +98,7 @@ async function sendOrderMessage(obj) {
     body+= "Reedem  at: " + bkLink;
     body+="\n Thank you for your purchase! And I hope I get to see you again!";
     if(obj.links){
-      body+='\n\n P.S: Are you getting the error, "Code needs to be 12-15 characters long"?';
+      body+='\n\n P.S: Are you getting the error, "Please make sure you\'re entering your 10 or 13 character code"?';
       body+= "\n" + "If so, please manually enter the code from the raw image link(s) below👇" + "\n";
       obj.links.map(link=> {
         body+= link + "\n";

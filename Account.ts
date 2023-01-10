@@ -1,8 +1,9 @@
 'use strict';
 let ebay = require('ebay-api');
-const order = require('./Order.ts');
+const order = require('./Order');
 var AWS = require('aws-sdk');
 const { setIntervalAsync} = require('set-interval-async');
+
 AWS.config.update({region: 'us-east-1'});
 
 
@@ -43,11 +44,12 @@ module.exports =  class Account {
             ]
         }
 
-        this.listings = [];
+        this.listings = listings;
         this.ddb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
         this.name = name;
         this.api = new ebay(OBJECT);
         this.api.OAuth2.setCredentials(credentials);
+       console.log(this.api)
 
         // this.api.sell.fulfillment.getOrders().then(x => {
         //     console.log(x)
@@ -64,6 +66,10 @@ module.exports =  class Account {
                credentials.date = Date().toString();
         });
 
+       console.log("we're working working");
+       setTimeout(() => {
+           this.setIntervalAsync()
+       },8000);
    }
 
    sendAlert(message){
@@ -85,22 +91,22 @@ module.exports =  class Account {
 
     async setIntervalAsync (){
         try{
+            console.log("we're working");
             setIntervalAsync(() => {this.loop()},10000);
         }
 
         catch (e){
-            this.sendAlert("Interval had a Problem")
-            this.sendAlert(e);
+            this.sendAlert(`Interval had a Problem: ${e}`);
         }
     }
 
      private async loop() {
-        console.log(`looping...${this.api.name}`);
+        console.log(`looping...${this.name}`);
         let ordersResult= await this.api.sell.fulfillment.getOrders({
             filter: "orderfulfillmentstatus:%7BNOT_STARTED%7CIN_PROGRESS%7D" });
 
         for (const e of ordersResult.orders){
-            console.log(`Unshipped order in ${this.api.name} account from ${e.buyer.username} and title: ${e.lineItems["0"].title}, Quantity: ${e.lineItems[0].quantity} `);
+            console.log(`Unshipped order in ${this.name} account from ${e.buyer.username} and title: ${e.lineItems["0"].title}, Quantity: ${e.lineItems[0].quantity} `);
             if(e.orderPaymentStatus === "PAID" && e.orderFulfillmentStatus === "NOT_STARTED" ){
                 let params = {
                     TableName: 'orders',
@@ -114,7 +120,11 @@ module.exports =  class Account {
                 console.log("Is there a value in dymnabodb?: " + check.item);
                 if(!check.Item){
                     console.log("There is an Item")
-                    let value = new order(this.api,this.listings,e);
+                    let  orderObject = new order(this,e);
+                    await orderObject.handleOrder(e);
+                    // setTimeout(() =>{
+                    //     Destr;
+                    // })
                 }
             }
         };
