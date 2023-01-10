@@ -20,7 +20,8 @@
     "@types/jest": "^29.2.4"
   },
   "scripts": {
-    "test": "jest --watchAll --verbose"
+    "test": "jest --watchAll --verbose",
+    "prod": "tsc --build  && pm2 index.js"
   },
   "repository": {
     "type": "git",
