@@ -1,9 +1,16 @@
-const {fetchcodes} = require("./dynamodb.js");
+import  {fetchcodes} from "./dynamodb.js";
 
 /* Small Script that will fetch codes from the database and mark them as consumed */
 (async () => {
-    codes = await fetchcodes(4,"Myself", "codes")
-    for(let x = 0; x < codes.codes.length; x++){
+    let codes = await fetchcodes(1,"Myself", "law")
+    for(let x = 1; x <= codes.codes.length; x++){
         console.log(`${x}. ${codes.codes[x].toString().replace(/-/g,"")},${codes.links[x]}`);
     }
 })();
+
+
+// weaponsXPCANADA
+//law
+
+
+

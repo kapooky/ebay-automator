@@ -1,8 +1,8 @@
 const path = require("path");
 const FormData = require("form-data");
 const fs = require("fs");
-const {recordTransaction} = require("./dynamodb");
-const {fetchcodes} = require("./dynamodb");
+const {recordTransaction} = require("./dynamodb.js");
+const {fetchcodes} = require("./dynamodb.js");
 
 var AWS = require("aws-sdk");
 var s3 = new AWS.S3();

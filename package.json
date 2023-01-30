@@ -1,8 +1,9 @@
 {
   "name": "ebay-sold",
   "version": "1.0.0",
+  "type": "module",
   "description": "Just",
-  "main": "dynamodb.js",
+  "main": "dynamodb.ts",
   "dependencies": {
     "aws-sdk": "^2.1261.0",
     "axios-retry": "^3.3.1",

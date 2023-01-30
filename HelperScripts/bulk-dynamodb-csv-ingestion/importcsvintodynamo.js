@@ -16,8 +16,8 @@ data.forEach((item) => {
     item.date = new Date().toString();
     docClient.put({TableName: 'codes', Item: item, ConditionExpression: "attribute_not_exists(code)",}, (err, res) => {
         if(err) {
-            console.log(err)
-            console.log(item)
+            //console.log(err)
+            console.log("Duplicate Item: " + item.code)
         }
     })
 })

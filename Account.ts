@@ -1,21 +1,16 @@
 'use strict';
-let ebay = require('ebay-api');
-const order = require('./Order');
-var AWS = require('aws-sdk');
-const { setIntervalAsync} = require('set-interval-async');
-
-AWS.config.update({region: 'us-east-1'});
+import {Listing} from "./d";
 
 
+import ebay from  'ebay-api'
+import Order from './Order.js';
+import AWS from 'aws-sdk';
+import { setIntervalAsync} from 'set-interval-async'
 
-interface Listing {
-    quantityMultiplier: number,
-    legacyItemID: number,
-    Description?: string,
-    DBtable: string
-}
+//AWS.config.update({region: 'us-east-1'});
 
-module.exports =  class Account {
+
+export default class Account {
     DEFAULT_LISTING;
     listings: Listing[]
     name: string
@@ -45,11 +40,13 @@ module.exports =  class Account {
         }
 
         this.listings = listings;
-        this.ddb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
+        this.ddb = new AWS.DynamoDB({apiVersion: '2012-08-10',
+           region: 'us-east-1'
+       });
         this.name = name;
         this.api = new ebay(OBJECT);
         this.api.OAuth2.setCredentials(credentials);
-       console.log(this.api)
+       //console.log(this.api)
 
         // this.api.sell.fulfillment.getOrders().then(x => {
         //     console.log(x)
@@ -66,7 +63,7 @@ module.exports =  class Account {
                credentials.date = Date().toString();
         });
 
-       console.log("we're working working");
+   //    console.log("we're working working");
        setTimeout(() => {
            this.setIntervalAsync()
        },8000);
@@ -79,7 +76,9 @@ module.exports =  class Account {
        };
 
 // Create promise and SNS service object
-       let publishTextPromise = new AWS.SNS({apiVersion: '2010-03-31'}).publish(params).promise();
+       let publishTextPromise = new AWS.SNS({apiVersion: '2010-03-31',
+           region: 'us-east-1'
+       }).publish(params).promise();
 
    }
 
@@ -119,8 +118,9 @@ module.exports =  class Account {
                 //If order ID doesn't exist, add new order
                 console.log("Is there a value in dymnabodb?: " + check.item);
                 if(!check.Item){
+                    this.sendAlert(`Unshipped order in ${this.name} account from ${e.buyer.username} and title: ${e.lineItems["0"].title}, Quantity: ${e.lineItems[0].quantity} `);
                     console.log("There is an Item")
-                    let  orderObject = new order(this,e);
+                    let  orderObject = new Order(this,e);
                     await orderObject.handleOrder(e);
                     // setTimeout(() =>{
                     //     Destr;

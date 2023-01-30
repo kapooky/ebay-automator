@@ -1,13 +1,17 @@
-var AWS = require('aws-sdk');
-const {setIntervalAsync} = require("set-interval-async");
-AWS.config.update({region: 'us-east-1'});
+import AWS from 'aws-sdk'
 
-async function fetchcodes (quantity,buyername,tablename){
+//AWS.config.update({region: 'us-east-1'});
+
+
+async function fetchcodes (quantity,buyername,index){
+    console.log("The index is" + index);
     console.log("the quantity is" + quantity);
-    const documentClient = new AWS.DynamoDB.DocumentClient();
+    const documentClient = new AWS.DynamoDB.DocumentClient({
+        region: 'us-east-1'
+    });
 
     const params = {
-        TableName: tablename,
+        TableName: "codes",
 //    "ScanIndexForward": true,
         IndexName: "status-code-index",
         KeyConditionExpression : '#status = :value',
@@ -15,12 +19,15 @@ async function fetchcodes (quantity,buyername,tablename){
             "#status": "status"
         },
         ExpressionAttributeValues: {
-            ":value": "new"
+            ":value": "available"
         },
         Limit: 1
     };
 
+
     params.Limit = quantity;
+    params.ExpressionAttributeValues[":value"] = index === "codes"? "law-new" : `${index}-new`
+    console.log(params.ExpressionAttributeValues[":value"])
 
     const result = await documentClient.query(params).promise();
 
@@ -28,7 +35,7 @@ async function fetchcodes (quantity,buyername,tablename){
     let codes = [];
     let links = [];
     for (const obj of result.Items){
-        updateCodesConsumed(obj.code, buyername,tablename).catch((e) => {
+        updateCodesConsumed(obj.code, buyername,index).catch((e) => {
             throw `${obj.code} could not be marked as consumed. Something went wrong`
         })
         console.log(obj.code);
@@ -39,6 +46,7 @@ async function fetchcodes (quantity,buyername,tablename){
 
             //Update the ACL on that object as well
             console.log("any object" + obj.link)
+            //dynamodb returns {link: x, status: consumed/available, codeitself: DHDXXX-XXX-XXX}
             publicACL(obj.link.split('/').pop())
         }
     }
@@ -51,23 +59,29 @@ async function publicACL(key){
         Key: key, /* required */
         ACL: "public-read"
     }
-    let s3 = new AWS.S3();
+    let s3 = new AWS.S3({
+        region: 'us-east-1'
+    });
 
     s3.putObjectAcl(params).promise().catch((e) => {
         console.log(e)
     })
 }
 
-let updateCodesConsumed = async function (primaryKey,buyername,tablename="codes"){
-    const documentClient = new AWS.DynamoDB.DocumentClient();
+let updateCodesConsumed = async function (primaryKey,buyername,tablename){
+    console.log("Is this even running?");
+    const value = tablename === "codes"? "consumed" : `${tablename}-consumed`
+    const documentClient = new AWS.DynamoDB.DocumentClient({
+        region: 'us-east-1'
+    });
     let updateParams = {
-        TableName: tablename,
+        TableName: "codes",
         Key: { code: primaryKey},
         // Key: "code",
         UpdateExpression: 'set #status = :value, #user = :user',
         ExpressionAttributeNames: {'#status' : 'status', '#user' : 'user'},
         ExpressionAttributeValues: {
-            ':value' : "consumed", //
+            ':value' : value, //
             ':user' : buyername
         }
     };
@@ -83,7 +97,10 @@ let updateCodesConsumed = async function (primaryKey,buyername,tablename="codes"
 
 
 async function recordTransaction(orderid,url,username,address){
-    if(!ddb) var ddb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
+    if(!ddb) var ddb = new AWS.DynamoDB({
+        apiVersion: '2012-08-10',
+        region: 'us-east-1'
+    });
     var params = {
         TableName: 'orders',
         Item: {
@@ -108,12 +125,11 @@ async function recordTransaction(orderid,url,username,address){
 
 })();
 
-function delay(t, v) {
+function delay(t, v=null) {
     return new Promise(resolve => setTimeout(resolve, t, v));
 }
 
 
 
-exports.recordTransaction = recordTransaction
-exports.fetchcodes = fetchcodes
-exports.delay = delay
+
+export {recordTransaction,fetchcodes, delay};

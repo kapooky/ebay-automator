@@ -1,21 +1,28 @@
 'use strict';
-var AWS = require('aws-sdk');
-AWS.config.update({region: 'us-east-1'});
-//import {Listing} from './d'
-const {fetchcodes,recordTransaction,delay} = require("./dynamodb.js");
+import AWS from 'aws-sdk'
+//AWS.config.update({region: 'us-east-1'});
+import {Listing} from './d'
+import {fetchcodes,recordTransaction,delay} from "./dynamodb.js"
 
-const DEFAULT_LISTING =
+
+interface bundleCodes {
+    quantityMultiplier: number,
+    DBtable: string
+}
+
+const DEFAULT_LISTING:Listing =
     {
         quantityMultiplier: 1,
         Description: "The default listing for this account",
-        legacyItemId: ['275586756168'],
+        legacyItemID: ['275586756168'], //Array of all items
         DBtable: "codes",
         Subject: "✅Here's your MW2 Burger Town Code!",
         Instructions: "Redeem at https://callofduty.com/bkredeem"
 
     };
 
-module.exports = class Order {
+
+export default class Order {
     DEFAULT_LISTING;
     name: string
     ddb;
@@ -25,7 +32,9 @@ module.exports = class Order {
     constructor(account, e) {
         this.account = account;
         this.e = e
-        this.ddb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
+        this.ddb = new AWS.DynamoDB({apiVersion: '2012-08-10',
+            region: 'us-east-1'
+        });
         this.DEFAULT_LISTING = DEFAULT_LISTING;
        // this.handleOrder(e);
     }
@@ -38,20 +47,33 @@ module.exports = class Order {
         let foundListing;
 
         for(const listing of this.account.listings){
-            console.log(`Listing in inner loop: ${listing}`)
+      //      console.log(`Listing in inner loop: ${listing}`)
             if(listing.legacyItemID.find(item => item === e.lineItems[0].legacyItemId)){
-                console.log("we have found this listing!" + listing)
+     //           console.log("we have found this listing!" + listing)
                 foundListing = listing;
                 break;
             }
         }
-
         if (foundListing){
             console.log("Found listing", foundListing);
             return foundListing;
         }
             console.log("did not find listing")
             return DEFAULT_LISTING
+    }
+    async handleBundle(quantity, listing:Listing, buyername :string){
+        let codes = [];
+        let links = [];
+
+        console.log("listing" + JSON.stringify(listing))
+        for(const bundleItem of listing.bundleCodes){
+            let obj = await fetchcodes(quantity * bundleItem.quantityMultiplier,buyername,bundleItem.DBtable);
+           codes = codes.concat(obj.codes);
+            links = links.concat(obj.links);
+            console.log("obj"  + JSON.stringify(obj));
+        }
+        console.log("The final array is" + JSON.stringify({codes,links}));
+        return {codes,links}
     }
 
      async handleOrder(order) {
@@ -61,7 +83,10 @@ module.exports = class Order {
         console.log("the Quantity is " + count);
         let buyername = order.buyer.username;
         let address = order.buyer.taxAddress;
-        const {codes, links} = await fetchcodes(count, buyername,listing.DBtable)
+
+        const {codes, links} = listing.Type === "Bundle" ? await this.handleBundle(count, listing,buyername) :
+            await fetchcodes(count, buyername,listing.DBtable)
+
         console.log(codes)
 
         const messageObject = {
@@ -70,6 +95,8 @@ module.exports = class Order {
             s3links: codes,
             links: links
         }
+
+         console.log(messageObject)
 
         //Record the transaction First
         try{
@@ -83,7 +110,7 @@ module.exports = class Order {
                 console.log(e);
                 throw e;
             });
-            await this.markasShipped(order)
+           await this.markasShipped(order)
         }
         catch (e){
             console.log(e)
@@ -115,9 +142,8 @@ module.exports = class Order {
         }
         if (listing.Instructions) body += listing.Instructions;
         body += "\n Thank you for your purchase! And I hope I get to see you again!";
-        body += "\n Grinding on MW2? We've got a 5-HOUR 2XP bundle!"
-        body += "\n We also have Jacklinks codes available too! Check our ads :)"
-        if (obj.links) {//todo This will be invoked even if obj.links == 0
+        body += "\n Check our other MW2 Ads :) , You won't be disapointed!"
+        if (obj.links.length > 0) {//todo This will be invoked even if obj.links == 0
             body += '\n\n P.S: Are you getting the error, "Code needs to be 12-15 characters long"?';
             body += "\n" + "If so, please manually enter the code from the image link(s) below👇" + "\n";
             obj.links.map(link => {

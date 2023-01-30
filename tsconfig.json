@@ -11,7 +11,9 @@
     "target": "es5",
     //"outDir": "out",
     "skipLibCheck": true,
-    "baseUrl": "."
+    "baseUrl": ".",
+    "esModuleInterop": true,
+    "moduleResolution": "node"
   }
 }
 

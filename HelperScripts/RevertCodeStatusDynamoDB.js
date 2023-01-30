@@ -4,12 +4,14 @@ AWS.config.update({region: 'us-east-1'});
 var s3 = new AWS.S3();
 
 
-const usernames = ["kapooky102","mw2codesforyou", "kapooky","kapooky100"];
+const usernames = ["kapooky102","mw2codesforyou", "kapooky12","kapooky100","thunder_bandit_shop_codes"];
+//const usernames = ["thunder_bandit_shop_codes"];
 
 const updateParams = {
     TableName: "codes",
 //    "ScanIndexForward": true,
     IndexName: "user-code-index",
+    //FilterExpression : "contains(#name, :name)",
     KeyConditionExpression : '#user = :value',
     ExpressionAttributeNames: {
         "#user": "user"
@@ -29,6 +31,7 @@ async function query(username) {
     });
 }
 async function putACL(url){
+    if(!url) return;
     let keyname = url.split('/').pop();
     let params = {
         Bucket: 'mw2-codes-new', /* required */
@@ -47,8 +50,10 @@ async function putACL(url){
             let result = await query(username);
             let promises = []
             for (const item of result.Items) {
-               promises.push(updateCodesConsumed(item.code));
-               promises.push(putACL(item.link));
+              //  console.log(item)
+               promises.push(updateCodesConsumed(item));
+               if(item.link) promises.push(putACL(item.link));
+
             }
             console.log(result);
             await Promise.all(promises).then(result => {
@@ -65,16 +70,19 @@ async function putACL(url){
 })();
 
 
-let updateCodesConsumed = async function (primaryKey){
+let updateCodesConsumed = async function (item){
     const documentClient = new AWS.DynamoDB.DocumentClient();
+
+    //const newStatus = `${item.status.split('-')[0]}-new`;
+    const newStatus = item.status.split('-').length > 1 ? `${item.status.split('-')[0]}-new` : `new`;
     let updateParams = {
         TableName: 'codes',
-        Key: { code: primaryKey},
+        Key: { code: item.code},
         // Key: "code",
         UpdateExpression: 'set #status = :value, #user = :user',
         ExpressionAttributeNames: {'#status' : 'status', '#user' : 'user'},
         ExpressionAttributeValues: {
-            ':value' : "available",
+            ':value' : newStatus,
             ':user' : "null"
         }
     };
