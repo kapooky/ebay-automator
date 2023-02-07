@@ -24,9 +24,12 @@ async function fetchcodes (quantity,buyername,index){
         Limit: 1
     };
 
+    const Default_index = "new"
+
 
     params.Limit = quantity;
-    params.ExpressionAttributeValues[":value"] = index === "codes"? "law-new" : `${index}-new`
+    index = index === "codes"? Default_index : `${index}-new`
+    params.ExpressionAttributeValues[":value"] = index;
     console.log(params.ExpressionAttributeValues[":value"])
 
     const result = await documentClient.query(params).promise();
@@ -35,7 +38,7 @@ async function fetchcodes (quantity,buyername,index){
     let codes = [];
     let links = [];
     for (const obj of result.Items){
-        updateCodesConsumed(obj.code, buyername,index).catch((e) => {
+        updateCodesConsumed(obj.code, buyername, index).catch((e) => {
             throw `${obj.code} could not be marked as consumed. Something went wrong`
         })
         console.log(obj.code);

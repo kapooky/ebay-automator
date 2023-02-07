@@ -1,8 +1,8 @@
 'use strict';
 import AWS from 'aws-sdk'
 //AWS.config.update({region: 'us-east-1'});
-import {Listing} from './d'
-import {fetchcodes,recordTransaction,delay} from "./dynamodb.js"
+import {Index, Listing, listingType} from './d.js'
+import {delay, fetchcodes, recordTransaction} from "./dynamodb.js"
 
 
 interface bundleCodes {
@@ -15,7 +15,8 @@ const DEFAULT_LISTING:Listing =
         quantityMultiplier: 1,
         Description: "The default listing for this account",
         legacyItemID: ['275586756168'], //Array of all items
-        DBtable: "codes",
+        DBtable: Index.codes,
+        Game: listingType.COD,
         Subject: "✅Here's your MW2 Burger Town Code!",
         Instructions: "Redeem at https://callofduty.com/bkredeem"
 
@@ -38,8 +39,6 @@ export default class Order {
         this.DEFAULT_LISTING = DEFAULT_LISTING;
        // this.handleOrder(e);
     }
-
-
     determineListings(e) {
         console.log(this.account.listings)
         console.log(e.lineItems)
@@ -47,9 +46,7 @@ export default class Order {
         let foundListing;
 
         for(const listing of this.account.listings){
-      //      console.log(`Listing in inner loop: ${listing}`)
             if(listing.legacyItemID.find(item => item === e.lineItems[0].legacyItemId)){
-     //           console.log("we have found this listing!" + listing)
                 foundListing = listing;
                 break;
             }
@@ -84,8 +81,7 @@ export default class Order {
         let buyername = order.buyer.username;
         let address = order.buyer.taxAddress;
 
-        const {codes, links} = listing.Type === "Bundle" ? await this.handleBundle(count, listing,buyername) :
-            await fetchcodes(count, buyername,listing.DBtable)
+        const {codes, links} = listing.Type === "Bundle" ? await this.handleBundle(count, listing,buyername) : await fetchcodes(count, buyername,listing.DBtable)
 
         console.log(codes)
 
@@ -105,8 +101,8 @@ export default class Order {
                 console.log(e);
                 throw e;
             });
-            await delay(12000);
-            await this.sendGoodbyeMessage(messageObject).catch((e) => {
+            await delay(60000);
+            await this.sendGoodbyeMessage(messageObject,listing).catch((e) => {
                 console.log(e);
                 throw e;
             });
@@ -137,17 +133,19 @@ export default class Order {
         console.log(this.account.api)
         let body = "Here are your code(s):\n"
         for (let i = 0; i < obj.s3links.length; i++) {
-            body += obj.s3links[i].toString().replace(/-/g, "");
+            body += `${i+1}. ${obj.s3links[i].toString().replace(/-/g, "")}`;
+            //body += `${i+1}. ${obj.s3links[i].toString()}`;
             body += "\n"
         }
-        if (listing.Instructions) body += listing.Instructions;
+
+            body += listing.Instructions;
         body += "\n Thank you for your purchase! And I hope I get to see you again!";
-        body += "\n Check our other MW2 Ads :) , You won't be disapointed!"
         if (obj.links.length > 0) {//todo This will be invoked even if obj.links == 0
             body += '\n\n P.S: Are you getting the error, "Code needs to be 12-15 characters long"?';
             body += "\n" + "If so, please manually enter the code from the image link(s) below👇" + "\n";
-            obj.links.map(link => {
-                body += link + "\n";
+            obj.links.map((link,index)=> {
+                let count = index + 1
+                body += `${count}. ${link}\n`;
             })
         }
         console.log(body);
@@ -168,16 +166,19 @@ export default class Order {
         console.log("hello world");
     }
 
-    async sendGoodbyeMessage(obj) {
+    async sendGoodbyeMessage(obj,listing) {
         // Send Message
+        let message =  "Enjoy your rewards! Please have a look at my other ads! \n Kind Regards, John"
+
+
+        if (listing.Game === listingType.HALO) {
+            message = "If you buy another Halo item off me, I'll throw in a Halo Infinite - 2XP and 2 Challenge Swap for free, \n John"
+        }
+
         let result = await this.account.api.trading.AddMemberMessageAAQToPartner({
             ItemID: obj.id,
             MemberMessage: {
-                Body: `
-  Everything going well with the code? \n
-  Let me know if any issues come up. \n
-  Kind regards,\n
-  John`,
+                Body: message,
                 QuestionType: "CustomizedSubject",
                 Subject: "Hope everything went well",
                 RecipientID: obj.buyername
