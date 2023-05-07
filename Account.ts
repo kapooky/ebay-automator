@@ -91,7 +91,7 @@ export default class Account {
     async setIntervalAsync (){
         try{
             console.log("we're working");
-            setIntervalAsync(() => {this.loop()},10000);
+            setIntervalAsync(() => {this.loop()},9000);
         }
 
         catch (e){
@@ -129,4 +129,7 @@ export default class Account {
             }
         };
     }
+
+
+    
 }

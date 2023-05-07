@@ -14,7 +14,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -37,14 +37,15 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 import AWS from 'aws-sdk';
 //AWS.config.update({region: 'us-east-1'});
-import { Index, listingType } from './d.js';
+import { Game, Index, ListingType } from './d.js';
 import { delay, fetchcodes, recordTransaction } from "./dynamodb.js";
 var DEFAULT_LISTING = {
     quantityMultiplier: 1,
     Description: "The default listing for this account",
     legacyItemID: ['275586756168'],
     DBtable: Index.codes,
-    Game: listingType.COD,
+    Game: Game.COD,
+    ListingType: ListingType.CODE,
     Subject: "✅Here's your MW2 Burger Town Code!",
     Instructions: "Redeem at https://callofduty.com/bkredeem"
 };
@@ -116,10 +117,13 @@ var Order = /** @class */ (function () {
                     case 0:
                         listing = this.determineListings(order);
                         count = order.lineItems[0].quantity * listing.quantityMultiplier;
+                        //   if(listing.DBtable === Index.TwoHOUR_WEAPONS_XP) count = Math.ceil(count/2); //RATE LIMIT
+                        if (listing.hasOwnProperty('limit') && count > listing.limit)
+                            count = listing.limit;
                         console.log("the Quantity is " + count);
                         buyername = order.buyer.username;
                         address = order.buyer.taxAddress;
-                        if (!(listing.Type === "Bundle")) return [3 /*break*/, 2];
+                        if (!(listing.ListingType === ListingType.BUNDLE)) return [3 /*break*/, 2];
                         return [4 /*yield*/, this.handleBundle(count, listing, buyername)];
                     case 1:
                         _b = _c.sent();
@@ -150,16 +154,16 @@ var Order = /** @class */ (function () {
                             })];
                     case 7:
                         messageResult = _c.sent();
-                        return [4 /*yield*/, delay(60000)];
+                        return [4 /*yield*/, this.markasShipped(order)];
                     case 8:
+                        _c.sent();
+                        return [4 /*yield*/, delay(60000)];
+                    case 9:
                         _c.sent();
                         return [4 /*yield*/, this.sendGoodbyeMessage(messageObject, listing).catch(function (e) {
                                 console.log(e);
                                 throw e;
                             })];
-                    case 9:
-                        _c.sent();
-                        return [4 /*yield*/, this.markasShipped(order)];
                     case 10:
                         _c.sent();
                         return [3 /*break*/, 12];
@@ -198,22 +202,33 @@ var Order = /** @class */ (function () {
     };
     Order.prototype.sendOrderMessage = function (obj, listing) {
         return __awaiter(this, void 0, void 0, function () {
-            var body, i, result;
+            var body, i, myString, username, link, result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         console.log(this.account.api);
-                        body = "Here are your code(s):\n";
+                        body = "Here are the codes, I typed them up: \n";
+                        if (listing.ListingType === ListingType.TWITCHDROP) {
+                            body = "Here are the credentials for the Twitch Account: \n";
+                        }
                         for (i = 0; i < obj.s3links.length; i++) {
-                            body += "".concat(i + 1, ". ").concat(obj.s3links[i].toString().replace(/-/g, ""));
+                            myString = obj.s3links[i].toString();
+                            if (listing.ListingType === ListingType.TWITCHDROP) {
+                                username = myString.substring(0, myString.indexOf(':'));
+                                link = myString.substring(myString.indexOf(':') + 1);
+                                body = "Please watch the video: https://streamable.com/9021a9 \n \uD83D\uDC49 Login: ".concat(username, " \n \uD83D\uDC49 Password: YouAreAwesomeYesYou123452!@# \n \uD83D\uDC49 Email Verification: https://www.1secmail.com/?login=").concat(username, "&amp;domain=qiott.com \n");
+                            }
+                            else {
+                                body += "".concat(i + 1, ". ").concat(obj.s3links[i].toString().replace(/-/g, "-"));
+                            }
                             //body += `${i+1}. ${obj.s3links[i].toString()}`;
                             body += "\n";
                         }
                         body += listing.Instructions;
                         body += "\n Thank you for your purchase! And I hope I get to see you again!";
                         if (obj.links.length > 0) { //todo This will be invoked even if obj.links == 0
-                            body += '\n\n P.S: Are you getting the error, "Code needs to be 12-15 characters long"?';
-                            body += "\n" + "If so, please manually enter the code from the image link(s) below👇" + "\n";
+                            body += '\n\n P.S: Are you getting an error? There could be a typo in the code.';
+                            body += "\n" + "please double check the code from the image link(s) below👇" + "\n";
                             obj.links.map(function (link, index) {
                                 var count = index + 1;
                                 body += "".concat(count, ". ").concat(link, "\n");
@@ -247,9 +262,9 @@ var Order = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        message = "Enjoy your rewards! Please have a look at my other ads! \n Kind Regards, John";
-                        if (listing.Game === listingType.HALO) {
-                            message = "If you buy another Halo item off me, I'll throw in a Halo Infinite - 2XP and 2 Challenge Swap for free, \n John";
+                        message = "Enjoy your rewards! Please have a look at my other ads!\n Kind Regards, John";
+                        if (listing.Game === Game.HALO) {
+                            message = "Check out my other Halo listings!, \n John";
                         }
                         return [4 /*yield*/, this.account.api.trading.AddMemberMessageAAQToPartner({
                                 ItemID: obj.id,
