@@ -171,9 +171,6 @@ export default class Order {
             console.log(e);
         });
     }
-    test(){
-        console.log("hello world");
-    }
 
     async sendGoodbyeMessage(obj,listing) {
         // Send Message
@@ -181,7 +178,8 @@ export default class Order {
 
 
         if (listing.Game === Game.HALO) {
-            message = "Check out my other Halo listings!, \n John"
+            message = "Check out my other Halo listings!  https://www.ebay.com/str/digitalgoodsstor3/Halo/_i.html?store_cat=39944678018 \n John"
+
         }
 
         let result = await this.account.api.trading.AddMemberMessageAAQToPartner({

@@ -39,9 +39,7 @@ export enum Index{
     Halo_hydra = "halo_hydra",
     Halo_RAZERBACK = "halo_razerback",
     XBOX1MONTH = "xbox1month",
-
     Roblox100="roblox100",
-
     FIFA23="fifa2023",
     FORZA="forza",
     KEEPY_UPPY="keepy_uppy",
@@ -49,8 +47,11 @@ export enum Index{
     MIDNIGHT="midnight",
     VICTORYSHOUT="victoryshout",
     JEDI="jedi",
-    HOGWARTS="legacy-new",
-    MILK="milk-new"
+    HOGWARTS="legacy",
+    MILK="milk",
+    WARCRAFT="warcraft",
+    EMBLEM="emblem",
+    SWEEP="sweepcharm"
 }
 
 export interface bundleCode {

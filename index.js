@@ -8,7 +8,7 @@ var daniellaobject = require("./data-daniella.json");
 var tariqazmatdotdevObject = require("./data-tariqazmatdev.json");
 var listings = [{
         quantityMultiplier: 5,
-        legacyItemID: ['275602449522', '275621619754', '225361736511', '285119694121', '275641135685', '314358285350', '225411875654', '225444235394'],
+        legacyItemID: ['275602449522', '275621619754', '225361736511', '285119694121', '275641135685', '314358285350', '225411875654', '225444235394', '275749784299'],
         Description: "5-Hour code",
         DBtable: Index.codes,
         Game: Game.COD,
@@ -28,7 +28,7 @@ var listings = [{
     },
     {
         quantityMultiplier: 2,
-        legacyItemID: ['275743365685', '275823515927'],
+        legacyItemID: ['275743365685', '275823515927', '225583781920', '225576334925'],
         Description: "2-hour BK COdes",
         DBtable: Index.codes,
         Game: Game.COD,
@@ -48,7 +48,7 @@ var listings = [{
     },
     {
         quantityMultiplier: 4,
-        legacyItemID: ['314574534504', '314574532072', '314574533332', '275827527324'],
+        legacyItemID: ['314574534504', '314574532072', '314574533332', '275827527324', '225583764490', '225583759221', '275860367275', '275860630558', '275860367275', '275860708243'],
         Description: "jacklinks 4 codes only",
         DBtable: Index.Jacklinks,
         Game: Game.COD,
@@ -78,7 +78,7 @@ var listings = [{
     },
     {
         quantityMultiplier: 1,
-        legacyItemID: ['275838665889'],
+        legacyItemID: ['275838665889', '225569860700'],
         Description: "HALO MILK  TWITCH DROPS",
         DBtable: Index.MILK,
         ListingType: ListingType.TWITCHDROP,
@@ -118,7 +118,7 @@ var listings = [{
     },
     {
         quantityMultiplier: 1,
-        legacyItemID: ['275819843703', '314561592888'],
+        legacyItemID: ['275819843703', '314561592888', '225569865961'],
         Description: "Keepy Uppy Twitch Drop",
         DBtable: Index.KEEPY_UPPY,
         Game: Game.OTHER,
@@ -128,12 +128,32 @@ var listings = [{
     },
     {
         quantityMultiplier: 1,
-        legacyItemID: ['275825414197'],
+        legacyItemID: ['314585438096'],
+        Description: "Warcraft",
+        DBtable: Index.WARCRAFT,
+        Game: Game.OTHER,
+        ListingType: ListingType.TWITCHDROP,
+        Subject: "✅Here's your WoW Twitch Drop!",
+        Instructions: "Go to Twitch.tv to redeem also please note it may take 24 hours for the rewards to be in your account."
+    },
+    {
+        quantityMultiplier: 1,
+        legacyItemID: ['275825414197', '225556339788'],
         Description: "Midnight Gold Twitch Drop",
         DBtable: Index.MIDNIGHT,
         Game: Game.HALO,
         ListingType: ListingType.TWITCHDROP,
         Subject: "✅Here's your Midnight Gold Twitch Account!",
+        Instructions: "Go to Twitch.tv to redeem!"
+    },
+    {
+        quantityMultiplier: 1,
+        legacyItemID: ['275849189392'],
+        Description: "SweepCharm Twitch Drop",
+        DBtable: Index.SWEEP,
+        Game: Game.HALO,
+        ListingType: ListingType.TWITCHDROP,
+        Subject: "✅Here's your SweepCharm DROP Twitch Account!",
         Instructions: "Go to Twitch.tv to redeem!"
     },
     {
@@ -148,7 +168,17 @@ var listings = [{
     },
     {
         quantityMultiplier: 1,
-        legacyItemID: ['314372690234', '275663879112', '314372690234', '225411868211', '314452531906', '314452531906'],
+        legacyItemID: ['314585458027'],
+        Description: "Halo Arbitration Twitch Drop",
+        DBtable: Index.EMBLEM,
+        Game: Game.HALO,
+        ListingType: ListingType.TWITCHDROP,
+        Subject: "✅Here's your Emblem Twitch Account!",
+        Instructions: "Go to Twitch.tv to redeem!"
+    },
+    {
+        quantityMultiplier: 1,
+        legacyItemID: ['314372690234', '275663879112', '314372690234', '225411868211', '314452531906', '314452531906', '314555265591'],
         Description: "Halo Oreo",
         DBtable: Index.Halo_Oreo,
         Game: Game.HALO,

@@ -253,9 +253,6 @@ var Order = /** @class */ (function () {
             });
         });
     };
-    Order.prototype.test = function () {
-        console.log("hello world");
-    };
     Order.prototype.sendGoodbyeMessage = function (obj, listing) {
         return __awaiter(this, void 0, void 0, function () {
             var message, result;
@@ -264,7 +261,7 @@ var Order = /** @class */ (function () {
                     case 0:
                         message = "Enjoy your rewards! Please have a look at my other ads!\n Kind Regards, John";
                         if (listing.Game === Game.HALO) {
-                            message = "Check out my other Halo listings!, \n John";
+                            message = "Check out my other Halo listings!  https://www.ebay.com/str/digitalgoodsstor3/Halo/_i.html?store_cat=39944678018 \n John";
                         }
                         return [4 /*yield*/, this.account.api.trading.AddMemberMessageAAQToPartner({
                                 ItemID: obj.id,
