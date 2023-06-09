@@ -51,7 +51,13 @@ export enum Index{
     MILK="milk",
     WARCRAFT="warcraft",
     EMBLEM="emblem",
-    SWEEP="sweepcharm"
+    SWEEP="sweepcharm",
+    FULLHALO="fullhalo",
+    ENDOWMENT="endowmentPSN",
+    FULLCOD="fullcod",
+    DEATHHEX="deathhex",
+    STANCE="pose",
+    DEFAULT=""
 }
 
 export interface bundleCode {

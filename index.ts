@@ -53,7 +53,7 @@ let listings: Listing[] = [{
     },
     {
         quantityMultiplier: 4,
-        legacyItemID: ['314574534504','314574532072','314574533332','275827527324','225583764490','225583759221','275860367275','275860630558','275860367275','275860708243'],
+        legacyItemID: ['314574534504','314574532072','314574533332','275827527324','225583764490','225583759221','275860367275','275860630558','275860367275','275860708243','314627036499'],
         Description: "jacklinks 4 codes only",
         DBtable: Index.Jacklinks,
         Game: Game.COD,
@@ -82,6 +82,27 @@ let listings: Listing[] = [{
         Subject: "✅Here is your Sunday CDL Twitch Drop",
         Instructions: "Please watch the video linked above to redeem the drops"
     },
+
+    {
+        quantityMultiplier: 1,
+        legacyItemID: ['314620787321'],
+        Description: "COD TWITCH DROPS ",
+        DBtable: Index.FULLCOD,
+        ListingType: ListingType.TWITCHDROP, //TODO CHANGE THIS
+        Game: Game.COD,
+        Subject: "✅Here is your Sunday CDL Twitch Drop",
+        Instructions: "Please watch the video linked above to redeem the drops. If you don't see the account credentials in this message, then please contact me. https://www.ebay.com/usr/mw2codesforyou"
+    },
+    {
+        quantityMultiplier: 1,
+        legacyItemID: ['314610877180'],
+        Description: "COD Endowment",
+        DBtable: Index.ENDOWMENT,
+        ListingType: ListingType.CODE, //TODO CHANGE THIS
+        Game: Game.COD,
+        Subject: "✅Here is your Endowment Pack",
+        Instructions: "Please give us 1-2 hours for us to process your order. Instructions "
+    },
     {
         quantityMultiplier: 1,
         legacyItemID: ['275838665889','225569860700'],
@@ -95,7 +116,19 @@ let listings: Listing[] = [{
 
     {
         quantityMultiplier: 1,
-        legacyItemID: ['275837105333','275838144781'],
+        legacyItemID: ['275862484898'],
+        Description: "HALO TWITCH DROP PACK",
+        DBtable: Index.FULLHALO,
+        ListingType: ListingType.TWITCHDROP, //TODO CHANGE THIS
+        Game: Game.HALO,
+        Subject: "✅Here is your Halo Twitch Drop Pack!",
+        Instructions: "Please watch the video linked above to redeem the drops"
+    },
+
+
+    {
+        quantityMultiplier: 1,
+        legacyItemID: ['275837105333','275838144781','225576335528'],
         Description: "HOGWARTS MAY TWITCH DROPS",
         DBtable: Index.HOGWARTS,
         ListingType: ListingType.TWITCHDROP, //TODO CHANGE THIS
@@ -115,7 +148,7 @@ let listings: Listing[] = [{
     },
     {
         quantityMultiplier: 1,
-        legacyItemID: ['275826948628'],
+        legacyItemID: ['275826948628','2791959008012'],
         Description: "JEDI SKIN",
         DBtable: Index.JEDI,
         Game: Game.OTHER,
@@ -184,6 +217,36 @@ let listings: Listing[] = [{
         ListingType: ListingType.TWITCHDROP,
         Subject: "✅Here's your Emblem Twitch Account!",
         Instructions: "Go to Twitch.tv to redeem!"
+    },
+    {
+        quantityMultiplier: 1,
+        legacyItemID: ['225601211222'],
+        Description: "Death Hex Bull Dog twitch Drop",
+        DBtable: Index.DEATHHEX,
+        Game: Game.HALO,
+        ListingType: ListingType.TWITCHDROP,
+        Subject: "✅Here's your DeathHex Twitch Account!",
+        Instructions: "Go to Twitch.tv to redeem!"
+    },
+    {
+        quantityMultiplier: 1,
+        legacyItemID: ['275838642560'],
+        Description: "Celebration Stance  twitch Drop",
+        DBtable: Index.STANCE,
+        Game: Game.HALO,
+        ListingType: ListingType.TWITCHDROP,
+        Subject: "✅Here's your HCS Celebration Stance Account!",
+        Instructions: "Go to Twitch.tv to redeem!"
+    },
+    {
+        quantityMultiplier: 1,
+        legacyItemID: ['275887058714','225605079994'],
+        Description: "EMBER HEX Twitch Drop",
+        DBtable: Index.WARCRAFT,
+        Game: Game.HALO,
+        ListingType: ListingType.TWITCHDROP,
+        Subject: "✅Here's your EMBER HEX Account!",
+        Instructions: "Go to Twitch.tv or https://www.halowaypoint.com/redeem to redeem!"
     },
     {
         quantityMultiplier: 1,
@@ -303,8 +366,8 @@ let listings: Listing[] = [{
         quantityMultiplier: 1,
         Game: Game.COD,
         ListingType: ListingType.BUNDLE,
-        Description: "The default listing for this account",
-        legacyItemID: ['314498391713','314574535597','314574536981','275720447754'], //Array of all items
+        Description: "Jacklinks/Mw2",
+        legacyItemID: ['314498391713','314574535597','314574536981','275720447754','314627077189','314627038970','314633905203','225607533478'], //Array of all items
         bundleCodes: [
             {
                 DBtable: Index.codes,
@@ -341,6 +404,28 @@ let listings: Listing[] = [{
         Subject: "✅Here is your 4x Jacklinks &amp; Burger Town Bundle!",
         Instructions: "The first code is BurgerTown. Redeem at https://callofduty.com/bkredeem" +
             "\n The rest are JackLink Codes redeem at https://callofduty.com/jacklinks"
+    },
+    {
+        quantityMultiplier: 1,
+        Game: Game.COD,
+        ListingType: ListingType.BUNDLE,
+        Description: "TRIPLE BUNDLE",
+        legacyItemID: ['314635952881'], //Array of all items
+        bundleCodes: [
+            {
+                DBtable: Index.codes,
+                quantityMultiplier: 1,
+            },
+            {
+                DBtable: Index.Jacklinks,
+                quantityMultiplier: 4,
+            },
+        ],
+
+        Subject: "✅Here is your Triple Operator Bundle!",
+        Instructions: "➡️ The first code is BurgerTown. Redeem at https://callofduty.com/bkredeem" +
+            "\n ➡️ The rest are JackLink Codes redeem at https://callofduty.com/jacklinks" +
+            "\n \n ⚠️ For the Valkeryie Operator, please tell me your platform(XBOX/PSN/Battle/STEAM) and location(NA/EU/ASIA)"
     },
 
 ];

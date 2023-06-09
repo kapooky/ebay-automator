@@ -43,11 +43,11 @@ var DEFAULT_LISTING = {
     quantityMultiplier: 1,
     Description: "The default listing for this account",
     legacyItemID: ['275586756168'],
-    DBtable: Index.codes,
+    DBtable: Index.DEFAULT,
     Game: Game.COD,
     ListingType: ListingType.CODE,
-    Subject: "✅Here's your MW2 Burger Town Code!",
-    Instructions: "Redeem at https://callofduty.com/bkredeem"
+    Subject: "Please contact me",
+    Instructions: "Hello, please contact me to receive your item. I should reply back within the same day.Thank you!"
 };
 var Order = /** @class */ (function () {
     function Order(account, e) {
