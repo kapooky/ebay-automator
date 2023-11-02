@@ -57,6 +57,7 @@ export enum Index{
     FULLCOD="fullcod",
     DEATHHEX="deathhex",
     STANCE="pose",
+    CAESER="caeser",
     DEFAULT=""
 }
 

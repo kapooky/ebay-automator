@@ -45,5 +45,6 @@ export var Index;
     Index["FULLCOD"] = "fullcod";
     Index["DEATHHEX"] = "deathhex";
     Index["STANCE"] = "pose";
+    Index["CAESER"] = "caeser";
     Index["DEFAULT"] = "";
 })(Index || (Index = {}));

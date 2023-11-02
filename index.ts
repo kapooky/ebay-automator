@@ -199,6 +199,16 @@ let listings: Listing[] = [{
         Instructions: "Go to Twitch.tv to redeem!"
     },
     {
+        quantityMultiplier: 2,
+        legacyItemID: ['276139750021'],
+        Description: "Ebay Little Caeser Operator",
+        DBtable: Index.CAESER,
+        Game: Game.COD,
+        ListingType: ListingType.CODE,
+        Subject: "✅Here's your little Caeser code!",
+        Instructions: "Go to https://callofduty.littlecaesars.com/ to redeem!"
+    },
+    {
         quantityMultiplier: 1,
         legacyItemID: ['275826975169'],
         Description: "Victory Shout Pose Twitch Drop",
