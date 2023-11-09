@@ -42,6 +42,16 @@ let listings: Listing[] = [{
         Instructions: "Redeem at https://callofduty.com/bkredeem"
     },
     {
+        quantityMultiplier: 4,
+        legacyItemID: ['276157292677'],
+        Description: "4-hour BK MW3 Codes",
+        DBtable: Index.codes,
+        Game: Game.COD,
+        ListingType: ListingType.CODE,
+        Subject: "✅Here's your 4-hour 2XP codes!",
+        Instructions: "Redeem at https://callofduty.com/bkredeem"
+    },
+    {
         quantityMultiplier: 1,
         legacyItemID: ['225471847770'],
         Description: "jacklinks 1 code only",
