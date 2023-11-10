@@ -43,13 +43,24 @@ let listings: Listing[] = [{
     },
     {
         quantityMultiplier: 4,
-        legacyItemID: ['276157292677'],
+        legacyItemID: ['276157292677','314952323545'],
         Description: "4-hour BK MW3 Codes",
         DBtable: Index.codes,
         Game: Game.COD,
         ListingType: ListingType.CODE,
         Subject: "✅Here's your 4-hour 2XP codes!",
-        Instructions: "Redeem at https://callofduty.com/bkredeem \n Please give me some time to respond if you need help"
+        Instructions: " ➡️ Redeem at https://callofduty.com/bkredeem \n\n Please give me some time to respond if you need help. \n \n ⚠️ You can only redeem a maximum of 40 codes per account!"
+    },
+
+    {
+        quantityMultiplier: 8,
+        legacyItemID: ['276159033910'],
+        Description: "8-hour BK MW3 Codes",
+        DBtable: Index.codes,
+        Game: Game.COD,
+        ListingType: ListingType.CODE,
+        Subject: "✅Here's your 8-hour 2XP codes!",
+        Instructions: " ➡️ Redeem at https://callofduty.com/bkredeem \n\n Please give me some time to respond if you need help. \n \n ⚠️ You can only redeem a maximum of 40 codes per account!"
     },
     {
         quantityMultiplier: 1,
