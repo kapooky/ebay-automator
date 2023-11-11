@@ -31,6 +31,18 @@ let listings: Listing[] = [{
         Instructions: "Redeem at https://callofduty.com/bkredeem"
 
     },
+
+    {
+        quantityMultiplier: 16,
+        legacyItemID: ['276161448603'],
+        Description: "16-Hour code",
+        DBtable: Index.codes,
+        Game: Game.COD,
+        ListingType: ListingType.CODE,
+        Subject: "✅Here's your 16-hour XP codes!",
+        Instructions: " ➡️ Redeem at https://callofduty.com/bkredeem \n\n Please give me some time to respond if you need help. \n \n ⚠️ You can only redeem a maximum of 40 codes per account!"
+
+    },
     {
         quantityMultiplier: 2,
         legacyItemID: ['275743365685','275823515927','225583781920','225576334925'],
