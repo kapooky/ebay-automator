@@ -58,7 +58,7 @@ var listings = [{
     },
     {
         quantityMultiplier: 8,
-        legacyItemID: ['276159033910'],
+        legacyItemID: ['276164499085'],
         Description: "8-hour BK MW3 Codes",
         DBtable: Index.codes,
         Game: Game.COD,
