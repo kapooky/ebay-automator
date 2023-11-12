@@ -174,7 +174,7 @@ export default class Order {
 
     async sendGoodbyeMessage(obj,listing) {
         // Send Message
-        let message =  "Enjoy your rewards! Please have a look at my other ads!\n Kind Regards, John"
+       let  message = "Enjoy your rewards! \n If you want to save money on MW3, buy the 16-hour pack for $18.99 https://www.ebay.com/itm/276161448603 \n Kind Regards, John";
 
 
         if (listing.Game === Game.HALO) {

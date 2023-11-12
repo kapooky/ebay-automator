@@ -5,7 +5,7 @@ var s3 = new AWS.S3();
 
 
 //const usernames = ["kapooky102","mw2codesforyou", "kapooky12","kapooky100","thunder_bandit_shop_codes"];
-const usernames = ["taly_chri"];
+const usernames = ["donwash-61"];
 
 const updateParams = {
     TableName: "codes",
@@ -74,7 +74,7 @@ let updateCodesConsumed = async function (item){
     const documentClient = new AWS.DynamoDB.DocumentClient();
 
     //const newStatus = `${item.status.split('-')[0]}-new`;
-    const newStatus = "jedi-new"
+    const newStatus = "new"
   //  const newStatus = item.status.split('-').length > 1 ? `${item.status.split('-')[0]}-new` : `new`;
     let updateParams = {
         TableName: 'codes',

@@ -45,7 +45,7 @@ let listings: Listing[] = [{
     },
     {
         quantityMultiplier: 2,
-        legacyItemID: ['275743365685','275823515927','225583781920','225576334925'],
+        legacyItemID: ['275743365685','275823515927','225583781920','314952694726', '225576334925'],
         Description: "2-hour BK COdes",
         DBtable: Index.codes,
         Game: Game.COD,
