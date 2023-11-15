@@ -86,7 +86,7 @@ var Account = /** @class */ (function () {
         //    console.log("we're working working");
         setTimeout(function () {
             _this.setIntervalAsync();
-        }, 8000);
+        }, 15000);
     }
     Account.prototype.sendAlert = function (message) {
         var params = {
