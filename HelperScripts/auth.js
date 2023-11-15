@@ -47,10 +47,10 @@ function updateTokenJSON(token) {
 }
 
 const OBJECT = {
-    appId: "TariqAzm-sandbox-PRD-d7db68d0a-ec165db0",
-    devId: "79fd9488-d650-4518-a549-1829967ab2e5",
-    ruName: "Tariq_Azmat-TariqAzm-sandbo-zgqwh",
-    certId: "PRD-95ffe9b24864-22b1-47d9-b8b9-8254",
+    appId: "DigiCode-random-PRD-b95ffe9b2-9d5b5437",
+    devId: "2b226866-26d5-4e3f-83de-4cbff643f2e7",
+    ruName: "DigiCodes-DigiCode-random-rykcv",
+    certId: "PRD-95ffe9b2f2fe-2c60-415c-882c-ab83",
     sandbox: false,
     autoRefreshToken: true,
 
@@ -106,7 +106,7 @@ tariqazmatdotdev.name = "tariqazmat.dev";
 (async () => {
     const url = eBay.oAuth2.generateAuthUrl();
     console.log('Open URL', url);
-    const otherToken = "v^1.1#i^1#r^1#p^3#I^3#f^0#t^Ul41XzExOjVFRTlBMUJCMjgxRjVDOEZFOTU0NDNBNzkzNDNFRTQ4XzFfMSNFXjI2MA==";
+    const otherToken = "^1.1#i^1#I^3#f^0#r^1#p^3#t^Ul41XzI6Q0UwN0U4OTRBMzE5NDAwQzA3QkEzNkVBQzA3RjA3NjJfMl8xI0VeMjYw";
     if(otherToken != undefined){
        let value =  await eBay.OAuth2.getToken(otherToken);
         console.log(JSON.stringify(value));
