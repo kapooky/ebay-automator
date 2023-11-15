@@ -174,7 +174,7 @@ export default class Order {
 
     async sendGoodbyeMessage(obj,listing) {
         // Send Message
-       let  message = "Enjoy your rewards! \n If you want to save money on MW3 2XP, buy the 32-hour 2XP pack for $29.99 https://www.ebay.com/itm/314962872061 \n Kind Regards, John";
+       let  message = "Enjoy your rewards! \n Hope you have a wonderful day! \n Kind Regards, John";
 
 
         if (listing.Game === Game.HALO) {

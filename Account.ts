@@ -66,7 +66,7 @@ export default class Account {
    //    console.log("we're working working");
        setTimeout(() => {
            this.setIntervalAsync()
-       },16000);
+       },15000);
    }
 
    sendAlert(message){
