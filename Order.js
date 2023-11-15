@@ -259,7 +259,7 @@ var Order = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        message = "Enjoy your rewards! \n If you want to save money on MW3, buy the 16-hour pack for $18.99 https://www.ebay.com/itm/276161448603 \n Kind Regards, John";
+                        message = "Enjoy your rewards! \n If you want to save money on MW3 2XP, buy the 32-hour 2XP pack for $29.99 https://www.ebay.com/itm/314962872061 \n Kind Regards, John";
                         if (listing.Game === Game.HALO) {
                             message = "Check out my other Halo listings!  https://www.ebay.com/str/digitalgoodsstor3/Halo/_i.html?store_cat=39944678018 \n John";
                         }
