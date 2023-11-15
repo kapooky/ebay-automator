@@ -54,6 +54,16 @@ let listings: Listing[] = [{
         Instructions: "Redeem at https://callofduty.com/bkredeem"
     },
     {
+        quantityMultiplier: 1,
+        legacyItemID: ['314962894251'],
+        Description: "1-hour BK COdes",
+        DBtable: Index.codes,
+        Game: Game.COD,
+        ListingType: ListingType.CODE,
+        Subject: "✅Here's your Burger King operator Skin",
+        Instructions: "Redeem at https://callofduty.com/bkredeem"
+    },
+    {
         quantityMultiplier: 4,
         legacyItemID: ['276157292677','314952323545'],
         Description: "4-hour BK MW3 Codes",
@@ -61,6 +71,26 @@ let listings: Listing[] = [{
         Game: Game.COD,
         ListingType: ListingType.CODE,
         Subject: "✅Here's your 4-hour 2XP codes!",
+        Instructions: " ➡️ Redeem at https://callofduty.com/bkredeem \n\n Please give me some time to respond if you need help. \n \n ⚠️ You can only redeem a maximum of 40 codes per account!"
+    },
+    {
+        quantityMultiplier: 32,
+        legacyItemID: ['314962872061'],
+        Description: "32 -hour BK MW3 Codes",
+        DBtable: Index.codes,
+        Game: Game.COD,
+        ListingType: ListingType.CODE,
+        Subject: "✅Here's your 32 -hour 2XP codes!",
+        Instructions: " ➡️ Redeem at https://callofduty.com/bkredeem \n\n Please give me some time to respond if you need help. \n \n ⚠️ You can only redeem a maximum of 40 codes per account!"
+    },
+    {
+        quantityMultiplier: 40,
+        legacyItemID: ['314962872061'],
+        Description: "40 -hour BK MW3 Codes",
+        DBtable: Index.codes,
+        Game: Game.COD,
+        ListingType: ListingType.CODE,
+        Subject: "✅Here's your 40 -hour 2XP codes!",
         Instructions: " ➡️ Redeem at https://callofduty.com/bkredeem \n\n Please give me some time to respond if you need help. \n \n ⚠️ You can only redeem a maximum of 40 codes per account!"
     },
 
