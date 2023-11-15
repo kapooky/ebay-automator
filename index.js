@@ -480,7 +480,7 @@ var listings = [{
 ];
 var account = new Account(listings, "tariq", tokenobject);
 var dotdev = new Account(listings, "dotdev", tariqazmatdotdevObject);
-var daniella = new Account(listings, "daniella", daniellaobject);
+//const daniella = new Account(listings, "daniella", daniellaobject);
 // (async () => {
 //     try {
 //         let result = await account.api.sell.fulfillment.getOrders();

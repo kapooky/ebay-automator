@@ -50,7 +50,7 @@ const OBJECT = {
     appId: "TariqAzm-sandbox-PRD-d7db68d0a-ec165db0",
     devId: "79fd9488-d650-4518-a549-1829967ab2e5",
     ruName: "Tariq_Azmat-TariqAzm-sandbo-zgqwh",
-    certId: "PRD-7db68d0a3879-c04f-4580-a161-105e\n",
+    certId: "PRD-95ffe9b24864-22b1-47d9-b8b9-8254",
     sandbox: false,
     autoRefreshToken: true,
 
@@ -87,26 +87,26 @@ tariqazmatdotdev.OAuth2.setCredentials(tariqazmatdotdevObject);
 tariqazmatdotdev.name = "tariqazmat.dev";
 
 // listen to refresh token event
-eBay.OAuth2.on('refreshAuthToken', (token) => {
-    jsonReader("./data.json",(err,json) => {
-        if(err){
-            console.log(err);
-            return;
-        }
-        json.access_token = token.access_token;
-        json.expires_in = token.expires_in;
-        json.refresh_token = token.refresh_token;
-        json.refresh_token_expires_in = token.refresh_token_expires_in;
-        json.token_type = token.token_type;
-        json.date = Date().toString();
-    })
-
-});
+// eBay.OAuth2.on('refreshAuthToken', (token) => {
+//     jsonReader("./data.json",(err,json) => {
+//         if(err){
+//             console.log(err);
+//             return;
+//         }
+//         json.access_token = token.access_token;
+//         json.expires_in = token.expires_in;
+//         json.refresh_token = token.refresh_token;
+//         json.refresh_token_expires_in = token.refresh_token_expires_in;
+//         json.token_type = token.token_type;
+//         json.date = Date().toString();
+//     })
+//
+// });
 
 (async () => {
     const url = eBay.oAuth2.generateAuthUrl();
     console.log('Open URL', url);
-    const otherToken = "code=v^1.1#i^1#I^3#f^0#p^3#r^1#t^Ul41XzQ6QUE4RTdERUNDODdFREM5ODExNDk4NDE3MTA5M0Q1QTZfMl8xI0VeMjYw&expires_in=299";
+    const otherToken = "v^1.1#i^1#I^3#r^1#f^0#p^3#t^Ul41XzQ6NzBBRTRDNjFCQTMwQTFBNkFGNjEzMjcxOUQyQkJFNUZfMV8xI0VeMjYw";
     if(otherToken != undefined){
        let value =  await eBay.OAuth2.getToken(otherToken);
         console.log(JSON.stringify(value));

@@ -504,7 +504,7 @@ let listings: Listing[] = [{
 ];
 const account = new Account(listings, "tariq", tokenobject);
 const dotdev = new Account(listings, "dotdev", tariqazmatdotdevObject);
-const daniella = new Account(listings, "daniella", daniellaobject);
+//const daniella = new Account(listings, "daniella", daniellaobject);
 // (async () => {
 //     try {
 //         let result = await account.api.sell.fulfillment.getOrders();
