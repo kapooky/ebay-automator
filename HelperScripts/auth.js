@@ -106,7 +106,7 @@ tariqazmatdotdev.name = "tariqazmat.dev";
 (async () => {
     const url = eBay.oAuth2.generateAuthUrl();
     console.log('Open URL', url);
-    const otherToken = "^1.1#i^1#I^3#f^0#r^1#p^3#t^Ul41XzI6Q0UwN0U4OTRBMzE5NDAwQzA3QkEzNkVBQzA3RjA3NjJfMl8xI0VeMjYw";
+    const otherToken = "v^1.1#i^1#f^0#I^3#p^3#r^1#t^Ul41Xzc6RDE1QjhCOTIyQjlGQTA3NkY4N0FGNTY0MzY3MUZBOEVfMV8xI0VeMjYw";
     if(otherToken != undefined){
        let value =  await eBay.OAuth2.getToken(otherToken);
         console.log(JSON.stringify(value));
