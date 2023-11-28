@@ -176,3 +176,4 @@ function delay(t, v) {
     return new Promise(function (resolve) { return setTimeout(resolve, t, v); });
 }
 export { recordTransaction, fetchcodes, delay };
+//# sourceMappingURL=dynamodb.js.map

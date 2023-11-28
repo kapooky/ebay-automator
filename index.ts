@@ -6,7 +6,6 @@ import {createRequire} from "module";
 const require = createRequire(import.meta.url);
 
 const tokenobject = require("./data.json");
-const kapooky102object = require("./kapooky102.json");
 const daniellaobject = require("./data-daniella.json");
 const tariqazmatdotdevObject = require("./data-tariqazmatdev.json");
 
@@ -45,7 +44,7 @@ let listings: Listing[] = [{
     },
     {
         quantityMultiplier: 2,
-        legacyItemID: ['275743365685','275823515927','225583781920','314952694726', '225576334925','314952694726'],
+        legacyItemID: ['275743365685','275823515927','225583781920','314952694726', '225576334925','314952694726','276176687439'],
         Description: "2-hour BK COdes",
         DBtable: Index.codes,
         Game: Game.COD,
@@ -502,7 +501,7 @@ let listings: Listing[] = [{
     },
 
 ];
-const account = new Account(listings, "tariq", tokenobject);
+//const account = new Account(listings, "tariq", tokenobject);
 const dotdev = new Account(listings, "dotdev", tariqazmatdotdevObject);
 //const daniella = new Account(listings, "daniella", daniellaobject);
 // (async () => {

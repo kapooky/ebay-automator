@@ -13,7 +13,8 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "esModuleInterop": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "sourceMap": true
   }
 }
 

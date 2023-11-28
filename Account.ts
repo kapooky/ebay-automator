@@ -7,6 +7,13 @@ import Order from './Order.js';
 import AWS from 'aws-sdk';
 import { setIntervalAsync} from 'set-interval-async'
 
+import   puppeteer from 'puppeteer-extra'
+//const pluginStealth = require("puppeteer-extra-plugin-stealth")
+import  pluginStealth from 'puppeteer-extra-plugin-stealth'
+import querystring from "querystring";
+import fs from "fs";
+
+
 //AWS.config.update({region: 'us-east-1'});
 
 
@@ -19,10 +26,10 @@ export default class Account {
 
    constructor(listings: Listing[], name, credentials) {
         const OBJECT = {
-            appId: "TariqAzm-sandbox-PRD-d7db68d0a-ec165db0",
-            devId: "79fd9488-d650-4518-a549-1829967ab2e5",
-            ruName: "Tariq_Azmat-TariqAzm-sandbo-zgqwh",
-            certId: "PRD-7db68d0a3879-c04f-4580-a161-105e",
+            appId: "DigiCode-random-PRD-b95ffe9b2-9d5b5437",
+            devId: "2b226866-26d5-4e3f-83de-4cbff643f2e7",
+            ruName: "DigiCodes-DigiCode-random-rykcv",
+            certId: "PRD-ac65bf938e91-cd12-4384-a7ed-bfd7",
             sandbox: false,
             autoRefreshToken: true,
 
@@ -91,7 +98,8 @@ export default class Account {
     async setIntervalAsync (){
         try{
             console.log("we're working");
-            setIntervalAsync(() => {this.loop()},9000);
+            await this.loop();
+            setIntervalAsync(() => {this.loop()},8000);
         }
 
         catch (e){
@@ -99,10 +107,32 @@ export default class Account {
         }
     }
 
+    private async handleError(e){
+       //Check what is the error about?
+        //check if the reason is because of an invalid token
+        //if the reason is because of an invalid token, then retrieve code to initiate a new browser instance
+        //
+    }
      private async loop() {
         console.log(`looping...${this.name}`);
         let ordersResult= await this.api.sell.fulfillment.getOrders({
-            filter: "orderfulfillmentstatus:%7BNOT_STARTED%7CIN_PROGRESS%7D" });
+            filter: "orderfulfillmentstatus:%7BNOT_STARTED%7CIN_PROGRESS%7D" }).catch(async e => {
+
+            console.log(`This error occured in the catchall loop function ${e}`);
+            if(e == `EBayError: invalid_client`){
+                console.log("Inside the loop");
+                const token  = await this.initiateBrowser();
+                console.log("going into retrieve function");
+                const result = await this.retrieveandSaveToken(token)
+
+
+
+
+
+            }
+            await this.handleError(e);
+            throw e;
+        });
 
         for (const e of ordersResult.orders){
             console.log(`Unshipped order in ${this.name} account from ${e.buyer.username} and title: ${e.lineItems["0"].title}, Quantity: ${e.lineItems[0].quantity} `);
@@ -121,7 +151,7 @@ export default class Account {
                     this.sendAlert(`Unshipped order in ${this.name} account from ${e.buyer.username} and title: ${e.lineItems["0"].title}, Quantity: ${e.lineItems[0].quantity} `);
                     console.log("There is an Item")
                     let  orderObject = new Order(this,e);
-                    await orderObject.handleOrder(e);
+                     orderObject.handleOrder(e);
                     // setTimeout(() =>{
                     //     Destr;
                     // })
@@ -130,6 +160,53 @@ export default class Account {
         };
     }
 
+    async sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+    async initiateBrowser(){
 
+
+        puppeteer.use(pluginStealth())
+//const chromeLauncher = require('chrome-launcher');
+        const chromeConfig = {
+            chromePath: "/usr/bin/google-chrome-stable",
+            userDataDir:"/home/tariq/.config/google-chrome/Default"
+            //  chromePath: "/usr/bin/google-chrome"
+        };
+        const browser = await puppeteer.connect({browserWSEndpoint: "ws://127.0.0.1:9222/devtools/browser/54c2ab7c-3e8f-45a4-ad06-168d9fd3da58" });
+        const page = await browser.newPage();
+        await page.goto('https://auth.ebay.com/oauth2/authorize?client_id=DigiCode-random-PRD-b95ffe9b2-9d5b5437&redirect_uri=DigiCodes-DigiCode-random-rykcv&response_type=code&state=&scope=https%3A%2F%2Fapi.ebay.com%2Foauth%2Fapi_scope%20https%3A%2F%2Fapi.ebay.com%2Foauth%2Fapi_scope%2Fsell.marketing.readonly%20https%3A%2F%2Fapi.ebay.com%2Foauth%2Fapi_scope%2Fsell.marketing%20https%3A%2F%2Fapi.ebay.com%2Foauth%2Fapi_scope%2Fsell.inventory.readonly%20https%3A%2F%2Fapi.ebay.com%2Foauth%2Fapi_scope%2Fsell.inventory%20https%3A%2F%2Fapi.ebay.com%2Foauth%2Fapi_scope%2Fsell.account.readonly%20https%3A%2F%2Fapi.ebay.com%2Foauth%2Fapi_scope%2Fsell.account%20https%3A%2F%2Fapi.ebay.com%2Foauth%2Fapi_scope%2Fsell.fulfillment%20https%3A%2F%2Fapi.ebay.com%2Foauth%2Fapi_scope%2Fsell.finances');
+        await this.sleep(3000);
+
+        const token =  page.url();
+        console.log(token);
+        return token;
+    }
+
+    async retrieveandSaveToken(token){
+            // @ts-ignore
+        const parsedUrl = querystring.parse(token,undefined,undefined, {decode : true}).code
+            console.log(parsedUrl);
+            const otherToken = parsedUrl;
+            if(otherToken){
+                console.log("trying to call the api");
+           //     await this.sleep(5000)
+                // This would be the happiest method of all time.
+                let value =  await this.api.OAuth2.obtainToken(otherToken);
+                console.log(value);
+                //const fileName = '/home/tariq/github/ebay-automator/data.json'
+                const fileName = '/home/tariq/github/ebay-automator/data-tariqazmatdev.json'
+                const data = value;
+
+                try {
+                    fs.writeFileSync(fileName, JSON.stringify(data));
+                    console.log("File has been saved.");
+                } catch (error) {
+                    console.error(error);
+                }
+                console.log(JSON.stringify(value));
+            }
+            // invokeAccounts(eBay,kapooky102);
+    }
     
 }

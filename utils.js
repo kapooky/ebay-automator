@@ -17,3 +17,4 @@ module.exports.OBJECT = {
         'https://api.ebay.com/oauth/api_scope/sell.finances'
     ]
 };
+//# sourceMappingURL=utils.js.map

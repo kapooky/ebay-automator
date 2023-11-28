@@ -5,12 +5,6 @@ const kapooky102object = require("../kapooky102.json");
 const  daniellaobject= require("../data-daniella.json");
 const tariqazmatdotdevObject = require("../data-tariqazmatdev.json");
 
-const prompt = require('prompt-sync')();
-const url = require('url');
-const querystring = require("querystring");
-
-
-
 const { setIntervalAsync} = require('set-interval-async');
 
 
@@ -112,28 +106,10 @@ tariqazmatdotdev.name = "tariqazmat.dev";
 (async () => {
     const url = eBay.oAuth2.generateAuthUrl();
     console.log('Open URL', url);
-    const token = prompt('What is your name?');
-    //const token = "https://signin.ebay.com/ws/eBayISAPI.dll?ThirdPartyAuthSucessFailure&isAuthSuccessful=true&code=v%5E1.1%23i%5E1%23p%5E3%23r%5E1%23I%5E3%23f%5E0%23t%5EUl41XzE6MUUxNkYyQzI5QzNFNzA2OEM0NDU5RDkwNTQ1NjA3MjJfMl8xI0VeMjYw&expires_in=299";
-    console.log(`Hey there ${token}`);
-
-    const parsedUrl = querystring.parse(token,undefined,undefined, {decode : true}).code
-    console.log(parsedUrl);
-    const otherToken = parsedUrl;
+    const otherToken = "v^1.1#i^1#f^0#r^1#p^3#I^3#t^Ul41XzI6NDBEMDVGODFGNUZFRjkzOUQ0NDY3QTZFMDZDRUIzNzlfMV8xI0VeMjYw";
     if(otherToken != undefined){
-       let value =  await eBay.OAuth2.getToken(otherToken);
-        console.log(value);
-       const fileName = '/home/tariq/github/ebay-automator/data.json'
-       //const fileName = '/home/tariq/github/ebay-automator/data-tariqazmatdev.json'
-        const fs = require('fs');
-        const data = value;
-
-        try {
-            fs.writeFileSync('file.txt', JSON.stringify(data));
-            console.log("File has been saved.");
-        } catch (error) {
-            console.error(error);
-        }
+        let value =  await eBay.OAuth2.getToken(otherToken);
         console.log(JSON.stringify(value));
     }
-   // invokeAccounts(eBay,kapooky102);
+    // invokeAccounts(eBay,kapooky102);
 })();
