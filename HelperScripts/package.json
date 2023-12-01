@@ -8,7 +8,6 @@
   },
   "keywords": [],
   "author": "",
-  "type": "module",
   "license": "ISC",
   "dependencies": {
     "chrome-launcher": "^1.1.0",
