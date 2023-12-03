@@ -66,13 +66,13 @@ var listings = [{
         Instructions: " ➡️ Redeem at https://callofduty.com/bkredeem \n\n Please give me some time to respond if you need help. \n \n ⚠️ You can only redeem a maximum of 40 codes per account!"
     },
     {
-        quantityMultiplier: 32,
-        legacyItemID: ['314962872061'],
-        Description: "32 -hour BK MW3 Codes",
+        quantityMultiplier: 20,
+        legacyItemID: ['276207093823'],
+        Description: "20 -hour BK MW3 Codes",
         DBtable: Index.codes,
         Game: Game.COD,
         ListingType: ListingType.CODE,
-        Subject: "✅Here's your 32 -hour 2XP codes!",
+        Subject: "✅Here's your 20 -hour 2XP codes!",
         Instructions: " ➡️ Redeem at https://callofduty.com/bkredeem \n\n Please give me some time to respond if you need help. \n \n ⚠️ You can only redeem a maximum of 40 codes per account!"
     },
     {
