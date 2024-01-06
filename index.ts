@@ -74,7 +74,7 @@ let listings: Listing[] = [{
     },
     {
         quantityMultiplier: 20,
-        legacyItemID: ['276207093823'],
+        legacyItemID: ['276207093823','4032627741011'],
         Description: "20 -hour BK MW3 Codes",
         DBtable: Index.codes,
         Game: Game.COD,

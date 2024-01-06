@@ -5,7 +5,7 @@ var s3 = new AWS.S3();
 
 
 //const usernames = ["kapooky102","mw2codesforyou", "kapooky12","kapooky100","thunder_bandit_shop_codes"];
-const usernames = ["impere-0"];
+const usernames = ["disducibus"];
 
 const updateParams = {
     TableName: "codes",
