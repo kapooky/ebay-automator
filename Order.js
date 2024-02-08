@@ -111,7 +111,7 @@ var Order = /** @class */ (function () {
     };
     Order.prototype.handleOrder = function (order) {
         return __awaiter(this, void 0, void 0, function () {
-            var listing, count, buyername, address, _a, codes, links, _b, messageObject, messageResult, e_1;
+            var listing, count, buyername, address, _a, codes, links, _b, messageObject, messageResult, result, e_1;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
@@ -144,7 +144,7 @@ var Order = /** @class */ (function () {
                         console.log(messageObject);
                         _c.label = 5;
                     case 5:
-                        _c.trys.push([5, 11, , 12]);
+                        _c.trys.push([5, 12, , 13]);
                         return [4 /*yield*/, recordTransaction(order.legacyOrderId.toString(), codes.toString(), buyername, address)];
                     case 6:
                         _c.sent();
@@ -154,24 +154,35 @@ var Order = /** @class */ (function () {
                             })];
                     case 7:
                         messageResult = _c.sent();
-                        return [4 /*yield*/, this.markasShipped(order)];
+                        return [4 /*yield*/, this.markasShipped(order)
+                            //Set the Quantity back to 6.
+                        ];
                     case 8:
                         _c.sent();
-                        return [4 /*yield*/, delay(60000)];
+                        return [4 /*yield*/, this.account.api.trading.ReviseFixedPriceItem({
+                                Item: {
+                                    ItemID: order.lineItems[0].legacyItemId,
+                                    // StartPrice: hisPrice - Math.floor(Math.random()*10)/10
+                                    Quantity: 6
+                                }
+                            })];
                     case 9:
+                        result = _c.sent();
+                        return [4 /*yield*/, delay(60000)];
+                    case 10:
                         _c.sent();
                         return [4 /*yield*/, this.sendGoodbyeMessage(messageObject, listing).catch(function (e) {
                                 console.log(e);
                                 throw e;
                             })];
-                    case 10:
-                        _c.sent();
-                        return [3 /*break*/, 12];
                     case 11:
+                        _c.sent();
+                        return [3 /*break*/, 13];
+                    case 12:
                         e_1 = _c.sent();
                         console.log(e_1);
                         throw e_1;
-                    case 12:
+                    case 13:
                         console.log("RESULT FINISHED");
                         return [2 /*return*/];
                 }
