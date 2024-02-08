@@ -100,6 +100,16 @@ export default class Order {
                 throw e;
             });
             await this.markasShipped(order)
+
+            //Set the Quantity back to 6.
+
+                let result = await this.account.api.trading.ReviseFixedPriceItem({
+                    Item: {
+                        ItemID: order.lineItems[0].legacyItemId,
+                        // StartPrice: hisPrice - Math.floor(Math.random()*10)/10
+                        Quantity: 6
+                    }
+                });
             await delay(60000);
             await this.sendGoodbyeMessage(messageObject,listing).catch((e) => {
                 console.log(e);
