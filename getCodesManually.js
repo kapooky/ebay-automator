@@ -4,8 +4,8 @@ import  {fetchcodes} from "./dynamodb.js";
 (async () => {
     //let codes = await fetchcodes(12,"myself","5hour2xp10codes")
     
-    let codes = await fetchcodes(17,"myself","codes")
-    for(let x = 0; x < codes.codes.length; x++){
+    let codes = await fetchcodes(100,"placeholder","codes")
+    for(let x = 0; x < codes.codes.length - 1; x++){
       // console.log(`${x+1}. ${codes.codes[x].toString().replace(/-/g,"")} ${codes.links[x].toString()}`);
       console.log(`${codes.codes[x].toString().replace(/-/g,"-")}`);
     //   console.log(`${x+1}. ${codes.codes[x].toString().replace(/-/g,"-")}`);
